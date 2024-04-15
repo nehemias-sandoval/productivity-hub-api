@@ -18,7 +18,7 @@ namespace productivity_hub_api.Models
 
         public int IdUsuario { get; set; }
 
-        [ForeignKey("Id")]
+        [ForeignKey("IdUsuario")]
         public virtual Usuario Usuario { get; set; }
     }
 }

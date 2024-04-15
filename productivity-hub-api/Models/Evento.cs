@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace productivity_hub_api.Models
 {
-    public class Tarea
+    public class Evento
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -14,16 +14,15 @@ namespace productivity_hub_api.Models
         public string Descripcion { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime FechaLimite { get; set; }
+        public DateTime Fecha { get; set; }
 
-        public bool Estado { get; set; }
+        public int IdTipoEvento { get; set; }
+
+        [ForeignKey("IdTipoEvento")]
+        public TipoEvento TipoEvento { get; set; }
 
         public List<EventoTarea> EventoTareas { get; set; }
 
-        public List<TareaEtiqueta> TareaEtiquetas { get; set; }
-
-        public List<Subtarea> Subtareas { get; set; }
-
-        public List<ProyectoTarea> ProyectoTareas { get; set; }
+        public List<EventoRecordatorio> EventoRecordatorios { get; set; }
     }
 }
