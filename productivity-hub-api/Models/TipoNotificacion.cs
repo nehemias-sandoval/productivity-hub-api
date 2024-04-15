@@ -3,20 +3,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace productivity_hub_api.Models
 {
-    public class Usuario
+    public class TipoNotificacion
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [DataType(DataType.EmailAddress)]
-        public string Email { get; set; }
+        public string Nombre { get; set; }
 
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
+        public string Descripcion { get; set; }
 
         public List<Notificacion> Notificaciones { get; set; }
 
-        public Configuracion Configuracion { get; set; }
     }
 }

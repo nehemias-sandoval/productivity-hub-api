@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace productivity_hub_api.Models
 {
-    public class Tarea
+    public class SubTarea
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -11,15 +11,11 @@ namespace productivity_hub_api.Models
 
         public string Titulo { get; set; }
 
-        public string Descripcion { get; set; }
-
-        [DataType(DataType.Date)]
-        public DateTime FechaLimite { get; set; }
-
         public bool Estado { get; set; }
 
-        public List<SubTarea> SubTareas { get; set; }
+        public int IdTarea { get; set; }
 
-        public List<ProyectoTarea> ProyectoTareas { get; set; }
+        [ForeignKey("IdTarea")]
+        public Tarea Tarea { get; set; }
     }
 }

@@ -12,5 +12,7 @@ namespace productivity_hub_api.Models
         public string Nombre { get; set; }
 
         public string Color { get; set; }
+
+        public List<ProyectoTarea> ProyectoTareas { get; set; }
     }
 }
