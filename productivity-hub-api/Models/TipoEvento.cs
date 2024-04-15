@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace productivity_hub_api.Models
 {
-    public class Prioridad
+    public class TipoEvento
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -11,8 +11,8 @@ namespace productivity_hub_api.Models
 
         public string Nombre { get; set; }
 
-        public string Color { get; set; }
+        public string Icono { get; set; }
 
-        public List<EventoTarea> EventoTareas { get; set; }
+        public List<Evento> Eventos { get; set; }
     }
 }
