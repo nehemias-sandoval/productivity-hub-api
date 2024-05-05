@@ -12,7 +12,7 @@ using productivity_hub_api.Models;
 namespace productivity_hub_api.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20240504205003_Initial")]
+    [Migration("20240505212530_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -52,6 +52,23 @@ namespace productivity_hub_api.Migrations
                         .IsUnique();
 
                     b.ToTable("Configuraciones");
+                });
+
+            modelBuilder.Entity("productivity_hub_api.Models.EstadoInvitacion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EstadoInvitaciones");
                 });
 
             modelBuilder.Entity("productivity_hub_api.Models.Etiqueta", b =>
@@ -102,6 +119,26 @@ namespace productivity_hub_api.Migrations
                     b.HasIndex("IdTipoEvento");
 
                     b.ToTable("Eventos");
+                });
+
+            modelBuilder.Entity("productivity_hub_api.Models.EventoPersona", b =>
+                {
+                    b.Property<int>("IdEvento")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdPersona")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdEstadoInvitacion")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdEvento", "IdPersona");
+
+                    b.HasIndex("IdEstadoInvitacion");
+
+                    b.HasIndex("IdPersona");
+
+                    b.ToTable("EventoPersonas");
                 });
 
             modelBuilder.Entity("productivity_hub_api.Models.EventoRecordatorio", b =>
@@ -266,6 +303,26 @@ namespace productivity_hub_api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Proyectos");
+                });
+
+            modelBuilder.Entity("productivity_hub_api.Models.ProyectoPersona", b =>
+                {
+                    b.Property<int>("IdProyecto")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdPersona")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdEstadoInvitacion")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdProyecto", "IdPersona");
+
+                    b.HasIndex("IdEstadoInvitacion");
+
+                    b.HasIndex("IdPersona");
+
+                    b.ToTable("ProyectoPersonas");
                 });
 
             modelBuilder.Entity("productivity_hub_api.Models.ProyectoTarea", b =>
@@ -463,6 +520,33 @@ namespace productivity_hub_api.Migrations
                     b.Navigation("TipoEvento");
                 });
 
+            modelBuilder.Entity("productivity_hub_api.Models.EventoPersona", b =>
+                {
+                    b.HasOne("productivity_hub_api.Models.EstadoInvitacion", "EstadoInvitacion")
+                        .WithMany()
+                        .HasForeignKey("IdEstadoInvitacion")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("productivity_hub_api.Models.Evento", "Evento")
+                        .WithMany()
+                        .HasForeignKey("IdEvento")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("productivity_hub_api.Models.Persona", "Persona")
+                        .WithMany()
+                        .HasForeignKey("IdPersona")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("EstadoInvitacion");
+
+                    b.Navigation("Evento");
+
+                    b.Navigation("Persona");
+                });
+
             modelBuilder.Entity("productivity_hub_api.Models.EventoRecordatorio", b =>
                 {
                     b.HasOne("productivity_hub_api.Models.Evento", "Evento")
@@ -541,6 +625,33 @@ namespace productivity_hub_api.Migrations
                         .IsRequired();
 
                     b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("productivity_hub_api.Models.ProyectoPersona", b =>
+                {
+                    b.HasOne("productivity_hub_api.Models.EstadoInvitacion", "EstadoInvitacion")
+                        .WithMany()
+                        .HasForeignKey("IdEstadoInvitacion")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("productivity_hub_api.Models.Persona", "Persona")
+                        .WithMany()
+                        .HasForeignKey("IdPersona")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("productivity_hub_api.Models.Proyecto", "Proyecto")
+                        .WithMany()
+                        .HasForeignKey("IdProyecto")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("EstadoInvitacion");
+
+                    b.Navigation("Persona");
+
+                    b.Navigation("Proyecto");
                 });
 
             modelBuilder.Entity("productivity_hub_api.Models.ProyectoTarea", b =>

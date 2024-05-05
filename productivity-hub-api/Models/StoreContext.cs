@@ -23,6 +23,12 @@ namespace productivity_hub_api.Models
             modelBuilder.Entity<TareaEtiqueta>()
                 .HasKey(x => new { x.IdTarea, x.IdEtiqueta });
 
+            modelBuilder.Entity<ProyectoPersona>()
+                .HasKey(x => new { x.IdProyecto, x.IdPersona });
+
+            modelBuilder.Entity<EventoPersona>()
+                .HasKey(x => new { x.IdEvento, x.IdPersona });
+
             base.OnModelCreating(modelBuilder);
         }
 
@@ -61,6 +67,12 @@ namespace productivity_hub_api.Models
         public DbSet<ProyectoTarea> ProyectoTareas { get; set; }
 
         public DbSet<TareaEtiqueta> TareaEtiquetas { get; set; }
+
+        public DbSet<EstadoInvitacion> EstadoInvitaciones { get; set; }
+
+        public DbSet<ProyectoPersona> ProyectoPersonas { get; set; }
+
+        public DbSet<EventoPersona> EventoPersonas { get; set; }
 
     }
 }

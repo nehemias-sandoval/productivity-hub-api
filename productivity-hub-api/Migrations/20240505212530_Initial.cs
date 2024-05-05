@@ -12,6 +12,19 @@ namespace productivity_hub_api.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "EstadoInvitaciones",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EstadoInvitaciones", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Etiquetas",
                 columns: table => new
                 {
@@ -372,11 +385,83 @@ namespace productivity_hub_api.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "EventoPersonas",
+                columns: table => new
+                {
+                    IdEvento = table.Column<int>(type: "int", nullable: false),
+                    IdPersona = table.Column<int>(type: "int", nullable: false),
+                    IdEstadoInvitacion = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EventoPersonas", x => new { x.IdEvento, x.IdPersona });
+                    table.ForeignKey(
+                        name: "FK_EventoPersonas_EstadoInvitaciones_IdEstadoInvitacion",
+                        column: x => x.IdEstadoInvitacion,
+                        principalTable: "EstadoInvitaciones",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EventoPersonas_Eventos_IdEvento",
+                        column: x => x.IdEvento,
+                        principalTable: "Eventos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EventoPersonas_Personas_IdPersona",
+                        column: x => x.IdPersona,
+                        principalTable: "Personas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProyectoPersonas",
+                columns: table => new
+                {
+                    IdProyecto = table.Column<int>(type: "int", nullable: false),
+                    IdPersona = table.Column<int>(type: "int", nullable: false),
+                    IdEstadoInvitacion = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProyectoPersonas", x => new { x.IdProyecto, x.IdPersona });
+                    table.ForeignKey(
+                        name: "FK_ProyectoPersonas_EstadoInvitaciones_IdEstadoInvitacion",
+                        column: x => x.IdEstadoInvitacion,
+                        principalTable: "EstadoInvitaciones",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProyectoPersonas_Personas_IdPersona",
+                        column: x => x.IdPersona,
+                        principalTable: "Personas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProyectoPersonas_Proyectos_IdProyecto",
+                        column: x => x.IdProyecto,
+                        principalTable: "Proyectos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Configuraciones_IdUsuario",
                 table: "Configuraciones",
                 column: "IdUsuario",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EventoPersonas_IdEstadoInvitacion",
+                table: "EventoPersonas",
+                column: "IdEstadoInvitacion");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EventoPersonas_IdPersona",
+                table: "EventoPersonas",
+                column: "IdPersona");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EventoRecordatorios_IdFrecuencia",
@@ -419,6 +504,16 @@ namespace productivity_hub_api.Migrations
                 column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProyectoPersonas_IdEstadoInvitacion",
+                table: "ProyectoPersonas",
+                column: "IdEstadoInvitacion");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProyectoPersonas_IdPersona",
+                table: "ProyectoPersonas",
+                column: "IdPersona");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProyectoTareas_IdPrioridad",
                 table: "ProyectoTareas",
                 column: "IdPrioridad");
@@ -446,6 +541,9 @@ namespace productivity_hub_api.Migrations
                 name: "Configuraciones");
 
             migrationBuilder.DropTable(
+                name: "EventoPersonas");
+
+            migrationBuilder.DropTable(
                 name: "EventoRecordatorios");
 
             migrationBuilder.DropTable(
@@ -455,7 +553,7 @@ namespace productivity_hub_api.Migrations
                 name: "Notificaciones");
 
             migrationBuilder.DropTable(
-                name: "Personas");
+                name: "ProyectoPersonas");
 
             migrationBuilder.DropTable(
                 name: "ProyectoTareas");
@@ -479,7 +577,10 @@ namespace productivity_hub_api.Migrations
                 name: "TipoNotificaciones");
 
             migrationBuilder.DropTable(
-                name: "Usuarios");
+                name: "EstadoInvitaciones");
+
+            migrationBuilder.DropTable(
+                name: "Personas");
 
             migrationBuilder.DropTable(
                 name: "Prioridades");
@@ -495,6 +596,9 @@ namespace productivity_hub_api.Migrations
 
             migrationBuilder.DropTable(
                 name: "TipoEventos");
+
+            migrationBuilder.DropTable(
+                name: "Usuarios");
         }
     }
 }
