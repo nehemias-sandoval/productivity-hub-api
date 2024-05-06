@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using productivity_hub_api.Models;
+using productivity_hub_api.Seeders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,16 @@ builder.Services.AddDbContext<StoreContext>(options =>
 });
 
 var app = builder.Build();
+
+using(var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    FrecuenciaSeeder.Initialize(services);
+    PrioridadSeeder.Initialize(services);
+    TipoNotificacionSeeder.Initialize(services);
+    EstadoInvitacionSeeder.Initialize(services);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

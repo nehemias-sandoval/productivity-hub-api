@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using productivity_hub_api.Seeders;
 
 namespace productivity_hub_api.Models
 {

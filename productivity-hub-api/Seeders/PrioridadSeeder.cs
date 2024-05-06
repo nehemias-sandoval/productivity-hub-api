@@ -1,19 +1,28 @@
-﻿using productivity_hub_api.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using productivity_hub_api.Models;
 
 namespace productivity_hub_api.Seeders
 {
     public static class PrioridadSeeder
     {
-        public static void SeedPrioriodad(StoreContext context)
+        public static void Initialize(IServiceProvider serviceProvider)
         {
-            if (!context.Prioridades.Any())
+            using (var context = new StoreContext(
+                serviceProvider.GetRequiredService<DbContextOptions<StoreContext>>()))
             {
-                var Prioriades = new List<Prioridad>
+                if (!context.Prioridades.Any())
                 {
-                    new Prioridad {Nombre = "Alta", Color = "#eb459f"},
-                    new Prioridad {Nombre = "Media", Color = "#faa61a"},
-                    new Prioridad {Nombre = "Baja", Color = "#23a55a"}
-                };
+                    var Prioriades = new List<Prioridad>
+                    {
+                        new Prioridad {Nombre = "Alta", Color = "#eb459f"},
+                        new Prioridad {Nombre = "Media", Color = "#faa61a"},
+                        new Prioridad {Nombre = "Baja", Color = "#23a55a"}
+                    };
+
+                    context.Prioridades.AddRange(Prioriades);
+                    context.SaveChanges();
+                }
             }
         }
     }

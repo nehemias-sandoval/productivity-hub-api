@@ -1,23 +1,29 @@
-﻿using productivity_hub_api.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using productivity_hub_api.Models;
 
 namespace productivity_hub_api.Seeders
 {
     public static class TipoNotificacionSeeder
     {
-        public static void SeedNotificacion(StoreContext context)
+        public static void Initialize(IServiceProvider serviceProvider)
         {
-            if(!context.TipoNotificaciones.Any())
+            using (var context = new StoreContext(
+                serviceProvider.GetRequiredService<DbContextOptions<StoreContext>>()))
             {
-                var TpNotificacion = new List<TipoNotificacion>
+                if (!context.TipoNotificaciones.Any())
                 {
-                    new TipoNotificacion {Nombre = "Recordatorio", Descripcion = "Tiene una tarea pendiente por terminar. Te invitamos a seguir progresando continuamente."},
-                    new TipoNotificacion {Nombre = "Vencimiento", Descripcion = "Tu tarea se ha vencido. Recuerda revisar tu progreso diariamente."},
-                    new TipoNotificacion {Nombre = "Asignación", Descripcion = "Se te asignó una nueva tarea. Da lo mejor de ti y completala a tiempo."},
-                    new TipoNotificacion {Nombre = "Invitación", Descripcion = "Se te ha invitado a un proyecto. Puedes revisar los detalles en tu correo electrónico."}
-                };
+                    var TpNotificacion = new List<TipoNotificacion>
+                    {
+                        new TipoNotificacion {Nombre = "Recordatorio", Descripcion = "Tiene una tarea pendiente por terminar. Te invitamos a seguir progresando continuamente."},
+                        new TipoNotificacion {Nombre = "Vencimiento", Descripcion = "Tu tarea se ha vencido. Recuerda revisar tu progreso diariamente."},
+                        new TipoNotificacion {Nombre = "Asignación", Descripcion = "Se te asignó una nueva tarea. Da lo mejor de ti y completala a tiempo."},
+                        new TipoNotificacion {Nombre = "Invitación", Descripcion = "Se te ha invitado a un proyecto. Puedes revisar los detalles en tu correo electrónico."}
+                    };
 
-                context.TipoNotificaciones.AddRange(TpNotificacion);
-                context.SaveChanges();
+                    context.TipoNotificaciones.AddRange(TpNotificacion);
+                    context.SaveChanges();
+                }
             }
         }
     }

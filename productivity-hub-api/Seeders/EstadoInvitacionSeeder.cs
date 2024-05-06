@@ -1,25 +1,26 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using productivity_hub_api.Models;
 
 namespace productivity_hub_api.Seeders
 {
-    public static class FrecuenciaSeeder
+    public static class EstadoInvitacionSeeder
     {
         public static void Initialize(IServiceProvider serviceProvider)
         {
             using (var context = new StoreContext(
                 serviceProvider.GetRequiredService<DbContextOptions<StoreContext>>()))
             {
-                if (!context.Frecuencias.Any())
+                if (!context.EstadoInvitaciones.Any())
                 {
-                    var frecuencias = new List<Frecuencia>
+                    var estadoInvitaciones = new List<EstadoInvitacion>
                     {
-                        new Frecuencia {Nombre = "Diaria"},
-                        new Frecuencia {Nombre = "Semanal"},
-                        new Frecuencia {Nombre = "Mensual"}
+                        new EstadoInvitacion {Nombre = "Pendiente"},
+                        new EstadoInvitacion {Nombre = "Aceptada"},
+                        new EstadoInvitacion {Nombre = "Rechazada"}
                     };
 
-                    context.Frecuencias.AddRange(frecuencias);
+                    context.EstadoInvitaciones.AddRange(estadoInvitaciones);
                     context.SaveChanges();
                 }
             }
