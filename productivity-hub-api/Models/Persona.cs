@@ -20,5 +20,9 @@ namespace productivity_hub_api.Models
 
         [ForeignKey("IdUsuario")]
         public virtual Usuario Usuario { get; set; }
+
+        public List<Tarea> Tareas { get; set; }
+
+        public List<ProyectoPersona> ProyectoPersonas { get; set; }
     }
 }

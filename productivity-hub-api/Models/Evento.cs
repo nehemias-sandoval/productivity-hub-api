@@ -24,5 +24,7 @@ namespace productivity_hub_api.Models
         public List<EventoTarea> EventoTareas { get; set; }
 
         public List<EventoRecordatorio> EventoRecordatorios { get; set; }
+
+        public List<EventoPersona> EventoPersonas { get; set; }
     }
 }

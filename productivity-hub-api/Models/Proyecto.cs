@@ -16,5 +16,7 @@ namespace productivity_hub_api.Models
         public bool Estado { get; set; }
 
         public List<ProyectoTarea> ProyectoTareas { get; set; }
+
+        public List<ProyectoPersona> ProyectoPersonas { get; set; }
     }
 }

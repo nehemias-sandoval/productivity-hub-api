@@ -2,9 +2,9 @@
 {
     public interface IHttpClient
     {
-        Task<R> GetAsync<R>(string url);
-        Task<R> PostAsync<R, C>(string url, C content);
-        Task<R> PutAsync<R, C>(string url, C content);
-        Task<R> DeleteAsync<R>(string url);
+        Task<TResponse> GetAsync<TResponse>(string url);
+        Task<TResponse> PostAsync<TResponse, TContent>(string url, TContent content);
+        Task<TResponse> PutAsync<TResponse, TContent>(string url, TContent content);
+        Task<TResponse> DeleteAsync<TResponse>(string url);
     }
 }

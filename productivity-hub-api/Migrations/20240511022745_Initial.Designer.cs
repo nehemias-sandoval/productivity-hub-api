@@ -12,7 +12,7 @@ using productivity_hub_api.Models;
 namespace productivity_hub_api.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20240505212530_Initial")]
+    [Migration("20240511022745_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -132,11 +132,16 @@ namespace productivity_hub_api.Migrations
                     b.Property<int>("IdEstadoInvitacion")
                         .HasColumnType("int");
 
+                    b.Property<int?>("TareaId")
+                        .HasColumnType("int");
+
                     b.HasKey("IdEvento", "IdPersona");
 
                     b.HasIndex("IdEstadoInvitacion");
 
                     b.HasIndex("IdPersona");
+
+                    b.HasIndex("TareaId");
 
                     b.ToTable("EventoPersonas");
                 });
@@ -411,11 +416,16 @@ namespace productivity_hub_api.Migrations
                     b.Property<DateTime>("FechaLimite")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("IdPersona")
+                        .HasColumnType("int");
+
                     b.Property<string>("Titulo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IdPersona");
 
                     b.ToTable("Tareas");
                 });
@@ -529,7 +539,7 @@ namespace productivity_hub_api.Migrations
                         .IsRequired();
 
                     b.HasOne("productivity_hub_api.Models.Evento", "Evento")
-                        .WithMany()
+                        .WithMany("EventoPersonas")
                         .HasForeignKey("IdEvento")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -539,6 +549,10 @@ namespace productivity_hub_api.Migrations
                         .HasForeignKey("IdPersona")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("productivity_hub_api.Models.Tarea", null)
+                        .WithMany("EventoPersonas")
+                        .HasForeignKey("TareaId");
 
                     b.Navigation("EstadoInvitacion");
 
@@ -636,13 +650,13 @@ namespace productivity_hub_api.Migrations
                         .IsRequired();
 
                     b.HasOne("productivity_hub_api.Models.Persona", "Persona")
-                        .WithMany()
+                        .WithMany("ProyectoPersonas")
                         .HasForeignKey("IdPersona")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("productivity_hub_api.Models.Proyecto", "Proyecto")
-                        .WithMany()
+                        .WithMany("ProyectoPersonas")
                         .HasForeignKey("IdProyecto")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -692,6 +706,17 @@ namespace productivity_hub_api.Migrations
                     b.Navigation("Tarea");
                 });
 
+            modelBuilder.Entity("productivity_hub_api.Models.Tarea", b =>
+                {
+                    b.HasOne("productivity_hub_api.Models.Persona", "Persona")
+                        .WithMany("Tareas")
+                        .HasForeignKey("IdPersona")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Persona");
+                });
+
             modelBuilder.Entity("productivity_hub_api.Models.TareaEtiqueta", b =>
                 {
                     b.HasOne("productivity_hub_api.Models.Etiqueta", "Etiqueta")
@@ -718,6 +743,8 @@ namespace productivity_hub_api.Migrations
 
             modelBuilder.Entity("productivity_hub_api.Models.Evento", b =>
                 {
+                    b.Navigation("EventoPersonas");
+
                     b.Navigation("EventoRecordatorios");
 
                     b.Navigation("EventoTareas");
@@ -726,6 +753,13 @@ namespace productivity_hub_api.Migrations
             modelBuilder.Entity("productivity_hub_api.Models.Frecuencia", b =>
                 {
                     b.Navigation("EventoRecordatorios");
+                });
+
+            modelBuilder.Entity("productivity_hub_api.Models.Persona", b =>
+                {
+                    b.Navigation("ProyectoPersonas");
+
+                    b.Navigation("Tareas");
                 });
 
             modelBuilder.Entity("productivity_hub_api.Models.Prioridad", b =>
@@ -737,6 +771,8 @@ namespace productivity_hub_api.Migrations
 
             modelBuilder.Entity("productivity_hub_api.Models.Proyecto", b =>
                 {
+                    b.Navigation("ProyectoPersonas");
+
                     b.Navigation("ProyectoTareas");
                 });
 
@@ -747,6 +783,8 @@ namespace productivity_hub_api.Migrations
 
             modelBuilder.Entity("productivity_hub_api.Models.Tarea", b =>
                 {
+                    b.Navigation("EventoPersonas");
+
                     b.Navigation("EventoTareas");
 
                     b.Navigation("ProyectoTareas");

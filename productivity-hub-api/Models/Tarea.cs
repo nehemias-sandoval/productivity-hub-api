@@ -18,6 +18,11 @@ namespace productivity_hub_api.Models
 
         public bool Estado { get; set; }
 
+        public int IdPersona { get; set; }
+
+        [ForeignKey("IdPersona")]
+        public Persona Persona { get; set; }
+
         public List<EventoTarea> EventoTareas { get; set; }
 
         public List<TareaEtiqueta> TareaEtiquetas { get; set; }
@@ -25,5 +30,7 @@ namespace productivity_hub_api.Models
         public List<Subtarea> Subtareas { get; set; }
 
         public List<ProyectoTarea> ProyectoTareas { get; set; }
+
+        public List<EventoPersona> EventoPersonas { get; set; }
     }
 }
