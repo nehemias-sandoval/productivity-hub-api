@@ -2,11 +2,15 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using productivity_hub_api.Automappers;
 using productivity_hub_api.DTOs.Proyecto;
+using productivity_hub_api.DTOs.Subtarea;
+using productivity_hub_api.DTOs.Tarea;
 using productivity_hub_api.Models;
 using productivity_hub_api.Repository;
 using productivity_hub_api.Seeders;
 using productivity_hub_api.Service;
 using productivity_hub_api.Validators.Proyecto;
+using productivity_hub_api.Validators.Subtarea;
+using productivity_hub_api.Validators.Tarea;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,14 +23,23 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IValidator<CreateProyectoDto>, CreateProyectoValidator>();
 builder.Services.AddScoped<IValidator<UpdateProyectoDto>, UpdateProyectoValidator>();
 
+builder.Services.AddScoped<IValidator<CreateTareaDto>, CreateTareaValidator>();
+builder.Services.AddScoped<IValidator<UpdateTareaDto>, UpdateTareaValidator>();
+
+builder.Services.AddScoped<IValidator<CreateSubtareaDto>, CreateSubtareaValidator>();
+builder.Services.AddScoped<IValidator<UpdateSubtareaDto>,  UpdateSubtareaValidator>();
+
 // Mappers
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 // Repository
 builder.Services.AddKeyedScoped<IRepository<Proyecto>, ProyectoRepository>("proyectoRepository");
-
+builder.Services.AddKeyedScoped<IRepository<Tarea>, TareaRepository>("tareaRepository");
+builder.Services.AddKeyedScoped<IRepository<Subtarea>, SubtareaRepository>("subtareaRepository");
 // Service
 builder.Services.AddKeyedScoped<ICommonService<ProyectoDto, CreateProyectoDto, UpdateProyectoDto>, ProyectoService>("proyectoService");
+builder.Services.AddKeyedScoped<ICommonService<TareaDto, CreateTareaDto, UpdateTareaDto>, TareaService>("tareaService");
+builder.Services.AddKeyedScoped<ICommonService<SubtareaDto, CreateSubtareaDto, UpdateSubtareaDto>, SubtareaService>("subtareaService");
 
 // Entity Framework
 builder.Services.AddDbContext<StoreContext>(options =>
