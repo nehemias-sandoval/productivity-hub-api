@@ -302,7 +302,7 @@ namespace productivity_hub_api.Migrations
                     Titulo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FechaLimite = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Estado = table.Column<bool>(type: "bit", nullable: false),
+                    Estado = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     IdPersona = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -422,7 +422,7 @@ namespace productivity_hub_api.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Titulo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Estado = table.Column<bool>(type: "bit", nullable: false),
+                    Estado = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     IdTarea = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -519,7 +519,8 @@ namespace productivity_hub_api.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Personas_IdUsuario",
                 table: "Personas",
-                column: "IdUsuario");
+                column: "IdUsuario",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProyectoPersonas_IdEstadoInvitacion",

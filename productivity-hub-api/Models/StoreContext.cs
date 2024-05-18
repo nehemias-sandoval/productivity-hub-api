@@ -30,6 +30,12 @@ namespace productivity_hub_api.Models
             modelBuilder.Entity<EventoPersona>()
                 .HasKey(x => new { x.IdEvento, x.IdPersona });
 
+            modelBuilder.Entity<Tarea>()
+                .Property(t => t.Estado).HasDefaultValue(false);
+
+            modelBuilder.Entity<Subtarea>()
+                .Property(s => s.Estado).HasDefaultValue(false);
+
             base.OnModelCreating(modelBuilder);
         }
 
