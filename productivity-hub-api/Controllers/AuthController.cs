@@ -6,7 +6,7 @@ using productivity_hub_api.Service;
 
 namespace productivity_hub_api.Controllers
 {
-    [Route("api/auth")]
+    [Route("api/v1/auth")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -49,7 +49,7 @@ namespace productivity_hub_api.Controllers
             return Ok(response);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("usuario/{id}")]
         [Authorize]
         public async Task<ActionResult<UsuarioDto>> GetById(int id)
         {
@@ -57,7 +57,7 @@ namespace productivity_hub_api.Controllers
             return proyetoDto == null ? NotFound() : Ok(proyetoDto);
         }
 
-        [HttpPost]
+        [HttpPost("usuario")]
         public async Task<ActionResult<UsuarioDto>> Add(CreateUsuarioDto createUsuarioDto)
         {
             var validationResult = await _createUsuarioValidator.ValidateAsync(createUsuarioDto);
