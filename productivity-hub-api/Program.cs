@@ -60,6 +60,8 @@ builder.Services.AddSwaggerGen(swagger =>
     });
 });
 
+builder.Services.AddHttpContextAccessor();
+
 // Validator
 builder.Services.AddScoped<IValidator<AuthenticateReqDto>, LoginValidator>();
 builder.Services.AddScoped<IValidator<CreateUsuarioDto>, CreateUsuarioValidator>();
