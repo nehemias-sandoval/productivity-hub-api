@@ -12,7 +12,7 @@ using productivity_hub_api.Models;
 namespace productivity_hub_api.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20240511022745_Initial")]
+    [Migration("20240518214107_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -260,7 +260,8 @@ namespace productivity_hub_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdUsuario");
+                    b.HasIndex("IdUsuario")
+                        .IsUnique();
 
                     b.ToTable("Personas");
                 });
@@ -382,7 +383,9 @@ namespace productivity_hub_api.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("Estado")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<int>("IdTarea")
                         .HasColumnType("int");
@@ -411,7 +414,9 @@ namespace productivity_hub_api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Estado")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<DateTime>("FechaLimite")
                         .HasColumnType("datetime2");
@@ -633,8 +638,8 @@ namespace productivity_hub_api.Migrations
             modelBuilder.Entity("productivity_hub_api.Models.Persona", b =>
                 {
                     b.HasOne("productivity_hub_api.Models.Usuario", "Usuario")
-                        .WithMany()
-                        .HasForeignKey("IdUsuario")
+                        .WithOne("Persona")
+                        .HasForeignKey("productivity_hub_api.Models.Persona", "IdUsuario")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -810,6 +815,9 @@ namespace productivity_hub_api.Migrations
                         .IsRequired();
 
                     b.Navigation("Notificaciones");
+
+                    b.Navigation("Persona")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

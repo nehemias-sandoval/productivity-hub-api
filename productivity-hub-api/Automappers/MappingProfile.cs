@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using productivity_hub_api.DTOs.Auth;
+using productivity_hub_api.DTOs.Persona;
 using productivity_hub_api.DTOs.Proyecto;
 using productivity_hub_api.DTOs.Subtarea;
 using productivity_hub_api.DTOs.Tarea;
@@ -10,9 +12,19 @@ namespace productivity_hub_api.Automappers
     {
         public MappingProfile()
         {
-            CreateMap<CreateProyectoDto, Proyecto>();
-            CreateMap<Proyecto, ProyectoDto>();
-            CreateMap<UpdateProyectoDto, Proyecto>();
+            // Usuario
+            CreateMap<Usuario, UsuarioDto>().ReverseMap();
+            CreateMap<CreateUsuarioDto, Usuario>().ReverseMap();
+            CreateMap<Usuario, AuthenticateResDto>().ReverseMap();
+
+            // Persona
+            CreateMap<CreatePersonaDto, Persona>().ReverseMap();
+            CreateMap<Persona, PersonaDto>().ReverseMap();
+
+            // Proyecto
+            CreateMap<CreateProyectoDto, Proyecto>().ReverseMap();
+            CreateMap<Proyecto, ProyectoDto>().ReverseMap();
+            CreateMap<UpdateProyectoDto, Proyecto>().ReverseMap();
 
             //Tarea
             CreateMap<CreateTareaDto, Tarea>();

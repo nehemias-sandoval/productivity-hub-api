@@ -2,12 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using productivity_hub_api.DTOs.Subtarea;
 using productivity_hub_api.DTOs.Tarea;
+using productivity_hub_api.helpers;
 using productivity_hub_api.Service;
 
 namespace productivity_hub_api.Controllers
 {
     [ApiController]
     [Route("api/v1/subtarea")]
+    [Authorize]
     public class SubtareaController : ControllerBase
     {
         IValidator<CreateSubtareaDto> _createSubtareaValidator;

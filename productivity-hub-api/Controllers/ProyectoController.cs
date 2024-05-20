@@ -1,13 +1,14 @@
 ﻿using FluentValidation;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using productivity_hub_api.DTOs.Proyecto;
+using productivity_hub_api.helpers;
 using productivity_hub_api.Service;
 
 namespace productivity_hub_api.Controllers
 {
     [Route("api/v1/proyecto")]
     [ApiController]
+    [Authorize]
     public class ProyectoController : ControllerBase
     {
         private IValidator<CreateProyectoDto> _createProyectoValidator;

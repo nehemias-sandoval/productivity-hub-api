@@ -14,7 +14,7 @@ namespace productivity_hub_api.Repository
 
         public async Task<IEnumerable<Proyecto>> GetAllAsync() => await _context.Proyectos.ToListAsync();
 
-        public async Task<Proyecto> GetByIdAsync(int id) => await _context.Proyectos.FindAsync(id);
+        public async Task<Proyecto?> GetByIdAsync(int id) => await _context.Proyectos.FindAsync(id);
 
         public async Task AddAsync(Proyecto proyecto) => await _context.Proyectos.AddAsync(proyecto);
 

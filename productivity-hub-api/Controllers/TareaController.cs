@@ -1,12 +1,14 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using productivity_hub_api.DTOs.Tarea;
+using productivity_hub_api.helpers;
 using productivity_hub_api.Service;
 
 namespace productivity_hub_api.Controllers
 {
     [Route("api/v1/tarea")]
     [ApiController]
+    [Authorize]
     public class TareaController : ControllerBase
     {
         private IValidator<CreateTareaDto> _createValidatorDto;
