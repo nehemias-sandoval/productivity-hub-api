@@ -96,7 +96,6 @@ using (var scope = app.Services.CreateScope())
     FrecuenciaSeeder.Initialize(services);
     PrioridadSeeder.Initialize(services);
     TipoNotificacionSeeder.Initialize(services);
-    EstadoInvitacionSeeder.Initialize(services);
 }
 
 // Configure the HTTP request pipeline.

@@ -30,7 +30,5 @@ namespace productivity_hub_api.Models
         public List<Subtarea> Subtareas { get; set; }
 
         public List<ProyectoTarea> ProyectoTareas { get; set; }
-
-        public List<EventoPersona> EventoPersonas { get; set; }
     }
 }
