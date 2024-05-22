@@ -5,36 +5,18 @@ namespace productivity_hub_api.Models
 {
     public class StoreContext : DbContext
     {
-        public StoreContext(DbContextOptions<StoreContext> options) : base(options)
-        {
-             
-        }
+        public StoreContext(DbContextOptions<StoreContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<EventoRecordatorio>()
-                .HasKey(x => new { x.IdEvento, x.IdRecordatorio});
-
-            modelBuilder.Entity<EventoTarea>()
-                .HasKey(x => new { x.IdEvento, x.IdTarea });
-
-            modelBuilder.Entity<ProyectoTarea>()
-                .HasKey(x => new { x.IdProyecto, x.IdTarea });
-
-            modelBuilder.Entity<TareaEtiqueta>()
-                .HasKey(x => new { x.IdTarea, x.IdEtiqueta });
-
-            modelBuilder.Entity<ProyectoPersona>()
-                .HasKey(x => new { x.IdProyecto, x.IdPersona });
-
-            modelBuilder.Entity<EventoPersona>()
-                .HasKey(x => new { x.IdEvento, x.IdPersona });
-
             modelBuilder.Entity<Tarea>()
                 .Property(t => t.Estado).HasDefaultValue(false);
 
             modelBuilder.Entity<Subtarea>()
                 .Property(s => s.Estado).HasDefaultValue(false);
+
+            modelBuilder.Entity<Proyecto>()
+                .Property(p => p.Estado).HasDefaultValue(false);
 
             base.OnModelCreating(modelBuilder);
         }
@@ -74,12 +56,6 @@ namespace productivity_hub_api.Models
         public DbSet<ProyectoTarea> ProyectoTareas { get; set; }
 
         public DbSet<TareaEtiqueta> TareaEtiquetas { get; set; }
-
-        public DbSet<EstadoInvitacion> EstadoInvitaciones { get; set; }
-
-        public DbSet<ProyectoPersona> ProyectoPersonas { get; set; }
-
-        public DbSet<EventoPersona> EventoPersonas { get; set; }
 
     }
 }

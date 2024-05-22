@@ -15,8 +15,11 @@ namespace productivity_hub_api.Models
 
         public bool Estado { get; set; }
 
-        public List<ProyectoTarea> ProyectoTareas { get; set; }
+        public int IdPersona { get; set; }
 
-        public List<ProyectoPersona> ProyectoPersonas { get; set; }
+        [ForeignKey("IdPersona")]
+        public Persona Persona { get; set; }
+
+        public List<ProyectoTarea> ProyectoTareas { get; set; }
     }
 }
