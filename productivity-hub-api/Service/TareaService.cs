@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using productivity_hub_api.DTOs.Auth;
 using productivity_hub_api.DTOs.Tarea;
 using productivity_hub_api.Models;
 using productivity_hub_api.Repository;
@@ -10,25 +11,35 @@ namespace productivity_hub_api.Service
         private IRepository<Tarea> _tareaRepository;
         private IMapper _mapper;
         StoreContext _context;
+        private IHttpContextAccessor _httpContextAccessor;
 
-        public TareaService([FromKeyedServices("tareaRepository")] IRepository<Tarea> tareaRepository, IMapper mapper, StoreContext context)
+        public TareaService([FromKeyedServices("tareaRepository")] IRepository<Tarea> tareaRepository, IMapper mapper, StoreContext context, IHttpContextAccessor httpContextAccessor)
         {
             _tareaRepository = tareaRepository;
             _mapper = mapper;
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<IEnumerable<TareaDto>> GetAllAsync()
         {
-            var tareas = await _tareaRepository.GetAllAsync();
-            return tareas.Select(t => _mapper.Map<TareaDto>(t));
+            var usuarioDto = _httpContextAccessor.HttpContext?.Items["User"] as UsuarioDto;
+
+            if (usuarioDto != null)
+            {
+                var tareas = await _tareaRepository.GetAllAsync();
+                return tareas.Where(t => t.IdPersona == usuarioDto.Persona.Id).Select(t => _mapper.Map<TareaDto>(t));
+            }
+
+            return Enumerable.Empty<TareaDto>();
         }
 
         public async Task<TareaDto?> GetByIdAsync(int id)
         {
+            var usuarioDto = _httpContextAccessor.HttpContext?.Items["User"] as UsuarioDto;
             var tarea = await _tareaRepository.GetByIdAsync(id);
 
-            if (tarea != null)
+            if (tarea != null && usuarioDto != null && tarea.IdPersona == usuarioDto.Persona.Id)
             {
                 var tareaDto = _mapper.Map<TareaDto>(tarea);
 
@@ -40,8 +51,13 @@ namespace productivity_hub_api.Service
 
         public async Task<TareaDto> AddAsync(CreateTareaDto createTareaDto)
         {
+            var usuarioDto = _httpContextAccessor.HttpContext?.Items["User"] as UsuarioDto;
             var tarea = _mapper.Map<Tarea>(createTareaDto);
-            tarea.IdPersona = 1;
+
+            if (usuarioDto != null)
+            {
+                tarea.IdPersona = usuarioDto.Persona.Id;
+            }
 
             await _tareaRepository.AddAsync(tarea);
             await _context.SaveChangesAsync();
@@ -53,9 +69,10 @@ namespace productivity_hub_api.Service
 
         public async Task<TareaDto?> UpdateAsync(int id, UpdateTareaDto updateTareaDto)
         {
+            var usuarioDto = _httpContextAccessor.HttpContext?.Items["User"] as UsuarioDto;
             var tarea = await _tareaRepository.GetByIdAsync(id);
 
-            if(tarea != null)
+            if(tarea != null && usuarioDto != null && tarea.IdPersona == usuarioDto.Persona.Id)
             {
                 tarea = _mapper.Map<UpdateTareaDto, Tarea>(updateTareaDto, tarea);
 
@@ -72,9 +89,10 @@ namespace productivity_hub_api.Service
 
         public async Task<TareaDto?> DeleteAsync(int id)
         {
+            var usuarioDto = _httpContextAccessor.HttpContext?.Items["User"] as UsuarioDto;
             var tarea = await _tareaRepository.GetByIdAsync(id);
 
-            if (tarea != null)
+            if (tarea != null && usuarioDto != null && tarea.IdPersona == usuarioDto.Persona.Id)
             {
                 var tareaDto = _mapper.Map<TareaDto>(tarea);
 

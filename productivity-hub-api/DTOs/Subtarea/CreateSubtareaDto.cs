@@ -3,5 +3,7 @@
     public class CreateSubtareaDto
     {
         public string Titulo { get; set; }
+
+        public int IdTarea { get; set; }
     }
 }

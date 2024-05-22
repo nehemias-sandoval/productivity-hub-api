@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using productivity_hub_api.DTOs.Persona;
+using productivity_hub_api.DTOs.Subtarea;
+using System.ComponentModel.DataAnnotations;
 
 namespace productivity_hub_api.DTOs.Tarea
 {
@@ -13,5 +15,7 @@ namespace productivity_hub_api.DTOs.Tarea
         public DateTime FechaLimite { get; set; }
 
         public bool Estado { get; set; }
+
+        public List<SubtareaDto> Subtareas { get; set; }
     }
 }

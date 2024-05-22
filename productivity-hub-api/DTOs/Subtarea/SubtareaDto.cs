@@ -1,4 +1,6 @@
-﻿namespace productivity_hub_api.DTOs.Subtarea
+﻿using productivity_hub_api.DTOs.Tarea;
+
+namespace productivity_hub_api.DTOs.Subtarea
 {
     public class SubtareaDto
     {

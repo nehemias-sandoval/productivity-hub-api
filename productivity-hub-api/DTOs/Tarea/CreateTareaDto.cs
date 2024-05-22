@@ -11,6 +11,10 @@ namespace productivity_hub_api.DTOs.Tarea
 
         public DateTime FechaLimite { get; set; }
 
+        public int IdProyecto { get; set; }
+
+        public int IdEvento { get; set; }
+
         public List<CreateSubtareaDto> Subtareas { get; set; }
     }
 }
