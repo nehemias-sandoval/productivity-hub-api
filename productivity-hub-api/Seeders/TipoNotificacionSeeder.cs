@@ -17,8 +17,7 @@ namespace productivity_hub_api.Seeders
                     {
                         new TipoNotificacion {Nombre = "Recordatorio", Descripcion = "Tiene una tarea pendiente por terminar. Te invitamos a seguir progresando continuamente."},
                         new TipoNotificacion {Nombre = "Vencimiento", Descripcion = "Tu tarea se ha vencido. Recuerda revisar tu progreso diariamente."},
-                        new TipoNotificacion {Nombre = "Asignación", Descripcion = "Se te asignó una nueva tarea. Da lo mejor de ti y completala a tiempo."},
-                        new TipoNotificacion {Nombre = "Invitación", Descripcion = "Se te ha invitado a un proyecto. Puedes revisar los detalles en tu correo electrónico."}
+                        new TipoNotificacion {Nombre = "Asignación", Descripcion = "Se te asignó una nueva tarea. Da lo mejor de ti y completala a tiempo."}
                     };
 
                     context.TipoNotificaciones.AddRange(TpNotificacion);

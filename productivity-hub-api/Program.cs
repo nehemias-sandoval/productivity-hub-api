@@ -84,6 +84,7 @@ builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddKeyedScoped<IRepository<Proyecto>, ProyectoRepository>("proyectoRepository");
 builder.Services.AddKeyedScoped<IRepository<Tarea>, TareaRepository>("tareaRepository");
 builder.Services.AddKeyedScoped<IRepository<Subtarea>, SubtareaRepository>("subtareaRepository");
+builder.Services.AddScoped<CatalogoRepository>();
 
 // Configuration
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
@@ -110,6 +111,7 @@ using (var scope = app.Services.CreateScope())
     FrecuenciaSeeder.Initialize(services);
     PrioridadSeeder.Initialize(services);
     TipoNotificacionSeeder.Initialize(services);
+    TipoEventoSeeder.Initialize(services);
 }
 
 // Configure the HTTP request pipeline.
