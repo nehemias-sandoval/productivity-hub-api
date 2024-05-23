@@ -17,6 +17,7 @@ using productivity_hub_api.Validators.Subtarea;
 using productivity_hub_api.Validators.Tarea;
 using productivity_hub_api.DTOs.Evento;
 using productivity_hub_api.Validators.Evento;
+using productivity_hub_api.DTOs.TareaEtiqueta;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -84,12 +85,17 @@ builder.Services.AddScoped<IValidator<UpdateSubtareaDto>,  UpdateSubtareaValidat
 // Mappers
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
+// UnitOfWork 
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 // Repository
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddKeyedScoped<IRepository<Proyecto>, ProyectoRepository>("proyectoRepository");
 builder.Services.AddKeyedScoped<IRepository<Evento>, EventoRepository>("eventoRepository");
 builder.Services.AddKeyedScoped<IRepository<Tarea>, TareaRepository>("tareaRepository");
 builder.Services.AddKeyedScoped<IRepository<Subtarea>, SubtareaRepository>("subtareaRepository");
+builder.Services.AddScoped<ProyectoTareaRepository>();
+builder.Services.AddScoped<EventoTareaRepository>();
 builder.Services.AddScoped<CatalogoRepository>();
 
 // Configuration
@@ -100,7 +106,7 @@ builder.Services.AddScoped<IUsuarioService<
     UsuarioDto, CreateUsuarioDto, UpdateUsuarioDto, AuthenticateReqDto, AuthenticateResDto>, UsuarioService>();
 builder.Services.AddKeyedScoped<ICommonService<ProyectoDto, CreateProyectoDto, UpdateProyectoDto>, ProyectoService>("proyectoService");
 builder.Services.AddKeyedScoped<ICommonService<EventoDto, CreateEventoDto, UpdateEventoDto>, EventoService>("eventoService");
-builder.Services.AddKeyedScoped<ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto>, TareaService>("tareaService");
+builder.Services.AddKeyedScoped<ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto, CreateTareaEtiquetaDto>, TareaService>("tareaService");
 builder.Services.AddKeyedScoped<ISubtareaService<SubtareaDto, CreateSubtareaDto, UpdateSubtareaDto>, SubtareaService>("subtareaService");
 
 // Entity Framework

@@ -18,10 +18,5 @@ namespace productivity_hub_api.Models
 
         [ForeignKey("IdTarea")]
         public Tarea Tarea { get; set; }
-
-        public int IdPrioridad { get; set; }
-
-        [ForeignKey("IdPrioridad")] 
-        public Prioridad Prioridad  { get; set; }
     }
 }

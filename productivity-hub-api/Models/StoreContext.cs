@@ -21,9 +21,6 @@ namespace productivity_hub_api.Models
             modelBuilder.Entity<Proyecto>()
                 .Property(p => p.Estado).HasDefaultValue(false);
 
-            modelBuilder.Entity<Evento>()
-                .Property(e => e.Estado).HasDefaultValue(false);
-
             base.OnModelCreating(modelBuilder);
         }
 

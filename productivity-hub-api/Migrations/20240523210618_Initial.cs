@@ -191,7 +191,6 @@ namespace productivity_hub_api.Migrations
                     Titulo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Estado = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     IdTipoEvento = table.Column<int>(type: "int", nullable: false),
                     IdPersona = table.Column<int>(type: "int", nullable: false)
                 },
@@ -304,8 +303,7 @@ namespace productivity_hub_api.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IdEvento = table.Column<int>(type: "int", nullable: false),
-                    IdTarea = table.Column<int>(type: "int", nullable: true),
-                    IdPrioridad = table.Column<int>(type: "int", nullable: false)
+                    IdTarea = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -314,12 +312,6 @@ namespace productivity_hub_api.Migrations
                         name: "FK_EventosTareas_Eventos_IdEvento",
                         column: x => x.IdEvento,
                         principalTable: "Eventos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_EventosTareas_Prioridades_IdPrioridad",
-                        column: x => x.IdPrioridad,
-                        principalTable: "Prioridades",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -336,18 +328,11 @@ namespace productivity_hub_api.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IdProyecto = table.Column<int>(type: "int", nullable: false),
-                    IdTarea = table.Column<int>(type: "int", nullable: true),
-                    IdPrioridad = table.Column<int>(type: "int", nullable: false)
+                    IdTarea = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ProyectoTareas", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ProyectoTareas_Prioridades_IdPrioridad",
-                        column: x => x.IdPrioridad,
-                        principalTable: "Prioridades",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ProyectoTareas_Proyectos_IdProyecto",
                         column: x => x.IdProyecto,
@@ -445,11 +430,6 @@ namespace productivity_hub_api.Migrations
                 column: "IdEvento");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EventosTareas_IdPrioridad",
-                table: "EventosTareas",
-                column: "IdPrioridad");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_EventosTareas_IdTarea",
                 table: "EventosTareas",
                 column: "IdTarea");
@@ -474,11 +454,6 @@ namespace productivity_hub_api.Migrations
                 name: "IX_Proyectos_IdPersona",
                 table: "Proyectos",
                 column: "IdPersona");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ProyectoTareas_IdPrioridad",
-                table: "ProyectoTareas",
-                column: "IdPrioridad");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProyectoTareas_IdProyecto",

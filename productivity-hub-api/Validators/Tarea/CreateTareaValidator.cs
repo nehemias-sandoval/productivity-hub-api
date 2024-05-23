@@ -10,6 +10,8 @@ namespace productivity_hub_api.Validators.Tarea
             RuleFor(x => x.Titulo).NotEmpty().WithMessage("El {PropertyName} es requerido");
             RuleFor(x => x.Descripcion).NotEmpty().WithMessage("El {PropertyName} es requerido");
             RuleFor(x => x.FechaLimite).NotEmpty().WithMessage("El {PropertyName} es requerido");
+            RuleFor(x => x.IdProyectoOrEvento).NotNull().WithMessage("El {PropertyName} es requerido");
+            RuleFor(x => x.IsProyecto).NotNull().WithMessage("El {PropertyName} es requerido");
         }
     }
 }

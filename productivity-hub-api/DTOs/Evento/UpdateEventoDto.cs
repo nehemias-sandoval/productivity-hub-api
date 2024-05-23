@@ -8,8 +8,6 @@
 
         public DateTime Fecha { get; set; }
 
-        public bool Estado { get; set; }
-
         public int IdTipoEvento { get; set; }
     }
 }

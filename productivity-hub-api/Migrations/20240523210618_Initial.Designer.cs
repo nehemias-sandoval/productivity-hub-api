@@ -12,7 +12,7 @@ using productivity_hub_api.Models;
 namespace productivity_hub_api.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20240523061030_Initial")]
+    [Migration("20240523210618_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -87,11 +87,6 @@ namespace productivity_hub_api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Estado")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime2");
 
@@ -153,17 +148,12 @@ namespace productivity_hub_api.Migrations
                     b.Property<int>("IdEvento")
                         .HasColumnType("int");
 
-                    b.Property<int>("IdPrioridad")
-                        .HasColumnType("int");
-
                     b.Property<int?>("IdTarea")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("IdEvento");
-
-                    b.HasIndex("IdPrioridad");
 
                     b.HasIndex("IdTarea");
 
@@ -310,9 +300,6 @@ namespace productivity_hub_api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("IdPrioridad")
-                        .HasColumnType("int");
-
                     b.Property<int>("IdProyecto")
                         .HasColumnType("int");
 
@@ -320,8 +307,6 @@ namespace productivity_hub_api.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("IdPrioridad");
 
                     b.HasIndex("IdProyecto");
 
@@ -575,19 +560,11 @@ namespace productivity_hub_api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("productivity_hub_api.Models.Prioridad", "Prioridad")
-                        .WithMany("EventoTareas")
-                        .HasForeignKey("IdPrioridad")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("productivity_hub_api.Models.Tarea", "Tarea")
                         .WithMany("EventoTareas")
                         .HasForeignKey("IdTarea");
 
                     b.Navigation("Evento");
-
-                    b.Navigation("Prioridad");
 
                     b.Navigation("Tarea");
                 });
@@ -631,12 +608,6 @@ namespace productivity_hub_api.Migrations
 
             modelBuilder.Entity("productivity_hub_api.Models.ProyectoTarea", b =>
                 {
-                    b.HasOne("productivity_hub_api.Models.Prioridad", "Prioridad")
-                        .WithMany("ProyectoTareas")
-                        .HasForeignKey("IdPrioridad")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("productivity_hub_api.Models.Proyecto", "Proyecto")
                         .WithMany("ProyectoTareas")
                         .HasForeignKey("IdProyecto")
@@ -646,8 +617,6 @@ namespace productivity_hub_api.Migrations
                     b.HasOne("productivity_hub_api.Models.Tarea", "Tarea")
                         .WithMany("ProyectoTareas")
                         .HasForeignKey("IdTarea");
-
-                    b.Navigation("Prioridad");
 
                     b.Navigation("Proyecto");
 
@@ -723,13 +692,6 @@ namespace productivity_hub_api.Migrations
             modelBuilder.Entity("productivity_hub_api.Models.Persona", b =>
                 {
                     b.Navigation("Tareas");
-                });
-
-            modelBuilder.Entity("productivity_hub_api.Models.Prioridad", b =>
-                {
-                    b.Navigation("EventoTareas");
-
-                    b.Navigation("ProyectoTareas");
                 });
 
             modelBuilder.Entity("productivity_hub_api.Models.Proyecto", b =>

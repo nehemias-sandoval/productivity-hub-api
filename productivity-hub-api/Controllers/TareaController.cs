@@ -1,7 +1,11 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using productivity_hub_api.DTOs.Auth;
 using productivity_hub_api.DTOs.Tarea;
+using productivity_hub_api.DTOs.TareaEtiqueta;
 using productivity_hub_api.helpers;
+using productivity_hub_api.Models;
+using productivity_hub_api.Repository;
 using productivity_hub_api.Service;
 
 namespace productivity_hub_api.Controllers
@@ -13,16 +17,25 @@ namespace productivity_hub_api.Controllers
     {
         private IValidator<CreateTareaDto> _createValidatorDto;
         private IValidator<UpdateTareaDto> _updateValidatorDto;
-        private ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto> _tareaService;
+        private ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto, CreateTareaEtiquetaDto> _tareaService;
+        private IRepository<Proyecto> _proyectoRepository;
+        private IRepository<Evento> _eventoRepository;
+        private IHttpContextAccessor _httpContextAccessor;
 
         public TareaController(
             IValidator<CreateTareaDto> createValidatorDto,
             IValidator<UpdateTareaDto> updateValidatorDto,
-            [FromKeyedServices("tareaService")] ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto> tareaService)
+            [FromKeyedServices("tareaService")] ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto, CreateTareaEtiquetaDto> tareaService,
+            [FromKeyedServices("proyectoRepository")] IRepository<Proyecto> proyectoRepository,
+            [FromKeyedServices("eventoRepository")] IRepository<Evento> eventoRepository,
+            IHttpContextAccessor httpContextAccessor)
         {
             _createValidatorDto = createValidatorDto;
             _updateValidatorDto = updateValidatorDto;
             _tareaService = tareaService;
+            _proyectoRepository = proyectoRepository;
+            _eventoRepository = eventoRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
 
 
@@ -39,6 +52,7 @@ namespace productivity_hub_api.Controllers
         [HttpPost]
         public async Task<ActionResult<TareaDto>> Add(CreateTareaDto createTareaDto)
         {
+            var usuarioDto = _httpContextAccessor.HttpContext?.Items["User"] as UsuarioDto;
             var validationResult = await _createValidatorDto.ValidateAsync(createTareaDto);
 
             if (!validationResult.IsValid)
@@ -46,8 +60,27 @@ namespace productivity_hub_api.Controllers
                 return BadRequest(validationResult.Errors);
             }
 
+            if (createTareaDto.IsProyecto)
+            {
+                var proyecto = await _proyectoRepository.GetByIdAsync(createTareaDto.IdProyectoOrEvento);
+                if (proyecto == null) return NotFound(new { message = "Proyecto no encontrado" });
+
+                if (usuarioDto != null)
+                    if (proyecto.IdPersona != usuarioDto.Persona.Id) return Unauthorized(new { message = "El Proyecto no le pertenece" });
+            }
+            else
+            {
+                var evento = await _eventoRepository.GetByIdAsync(createTareaDto.IdProyectoOrEvento);
+                if (evento == null) return NotFound(new { message = "Evento no encontrado" });
+
+                if (usuarioDto != null)
+                    if (evento.IdPersona != usuarioDto.Persona.Id) return Unauthorized(new { message = "El Evento no le pertenece" });
+            }
+
             var tareaDto = await _tareaService.AddAsync(createTareaDto);
-            return CreatedAtAction(nameof(GetById), new {id =  tareaDto.Id}, tareaDto);
+            if (tareaDto == null) return StatusCode(500);
+
+            return CreatedAtAction(nameof(GetById), new { id =  tareaDto.Id }, tareaDto);
         }
 
         [HttpPut ("{id}")]
@@ -76,6 +109,12 @@ namespace productivity_hub_api.Controllers
         {
             var tareaDto = await _tareaService.DeleteAsync(id);
             return tareaDto == null ? NotFound() : Ok(tareaDto); 
+        }
+
+        [HttpPost("{id}")]
+        public async Task<ActionResult<TareaEtiquetaDto>> AddEtiqueta(CreateTareaEtiquetaDto createTareaEtiquetaDto)
+        {
+            throw new NotImplementedException();
         }
     }
 }

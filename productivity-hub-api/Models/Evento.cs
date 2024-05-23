@@ -16,8 +16,6 @@ namespace productivity_hub_api.Models
         [DataType(DataType.Date)]
         public DateTime Fecha { get; set; }
 
-        public bool Estado { get; set; }
-
         public int IdTipoEvento { get; set; }
 
         [ForeignKey("IdTipoEvento")]

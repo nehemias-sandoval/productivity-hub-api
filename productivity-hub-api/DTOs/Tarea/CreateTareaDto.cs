@@ -11,9 +11,9 @@ namespace productivity_hub_api.DTOs.Tarea
 
         public DateTime FechaLimite { get; set; }
 
-        public int IdProyecto { get; set; }
+        public int IdProyectoOrEvento { get; set; }
 
-        public int IdEvento { get; set; }
+        public bool IsProyecto { get; set; }
 
         public int IdPrioridad { get; set; }
 

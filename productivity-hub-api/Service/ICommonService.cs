@@ -6,7 +6,7 @@
 
         Task<TDto?> GetByIdAsync(int id);
 
-        Task<TDto> AddAsync(TCreateDto createDto);
+        Task<TDto?> AddAsync(TCreateDto createDto);
 
         Task<TDto?> UpdateAsync(int id, TUpdateDto updateDto);
 

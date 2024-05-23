@@ -9,7 +9,7 @@ namespace productivity_hub_api.Service
 
         Task<SubtareaDto?> GetByIdAsync(int id);
 
-        Task<SubtareaDto> AddAsync(CreateSubtareaDto createDto);
+        Task<SubtareaDto?> AddAsync(CreateSubtareaDto createDto);
 
         Task<SubtareaDto?> UpdateAsync(int id, UpdateSubtareaDto updateDto);
 

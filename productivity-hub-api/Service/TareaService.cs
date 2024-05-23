@@ -1,23 +1,40 @@
 ﻿using AutoMapper;
 using productivity_hub_api.DTOs.Auth;
 using productivity_hub_api.DTOs.Tarea;
+using productivity_hub_api.DTOs.TareaEtiqueta;
 using productivity_hub_api.Models;
 using productivity_hub_api.Repository;
 
 namespace productivity_hub_api.Service
 {
-    public class TareaService : ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto>
+    public class TareaService : ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto, CreateTareaEtiquetaDto>
     {
+        private IUnitOfWork _unitOfWork;
         private IRepository<Tarea> _tareaRepository;
+        private IRepository<Proyecto> _proyectoRepository;
+        private IRepository<Evento> _eventoRepository;
+        private ProyectoTareaRepository _proyectoTareaRepository;
+        private EventoTareaRepository _eventoTareaRepository;
         private IMapper _mapper;
-        StoreContext _context;
         private IHttpContextAccessor _httpContextAccessor;
 
-        public TareaService([FromKeyedServices("tareaRepository")] IRepository<Tarea> tareaRepository, IMapper mapper, StoreContext context, IHttpContextAccessor httpContextAccessor)
+        public TareaService(
+            IUnitOfWork unitOfWork,
+            [FromKeyedServices("tareaRepository")] IRepository<Tarea> tareaRepository, 
+            [FromKeyedServices("proyectoRepository")] IRepository<Proyecto> proyectoRepository,
+            [FromKeyedServices("eventoRepository")] IRepository<Evento> eventoRepository,
+            ProyectoTareaRepository proyectoTareaRepository,
+            EventoTareaRepository eventoTareaRepository,
+            IMapper mapper,
+            IHttpContextAccessor httpContextAccessor)
         {
+            _unitOfWork = unitOfWork;
             _tareaRepository = tareaRepository;
             _mapper = mapper;
-            _context = context;
+            _proyectoRepository = proyectoRepository;
+            _eventoRepository = eventoRepository;
+            _proyectoTareaRepository = proyectoTareaRepository;
+            _eventoTareaRepository = eventoTareaRepository;
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -53,7 +70,7 @@ namespace productivity_hub_api.Service
             return null;
         }
 
-        public async Task<TareaDto> AddAsync(CreateTareaDto createTareaDto)
+        public async Task<TareaDto?> AddAsync(CreateTareaDto createTareaDto)
         {
             var usuarioDto = _httpContextAccessor.HttpContext?.Items["User"] as UsuarioDto;
             var tarea = _mapper.Map<Tarea>(createTareaDto);
@@ -63,12 +80,54 @@ namespace productivity_hub_api.Service
                 tarea.IdPersona = usuarioDto.Persona.Id;
             }
 
-            await _tareaRepository.AddAsync(tarea);
-            await _context.SaveChangesAsync();
+            await _unitOfWork.BeginTransactionAsync();
 
-            var tareaDto = _mapper.Map<TareaDto>(tarea);
+            try
+            {
+                await _tareaRepository.AddAsync(tarea);
+                await _unitOfWork.SaveChangesAsync();
 
-            return tareaDto;
+                if (createTareaDto.IsProyecto)
+                {
+                    var proyecto = await _proyectoRepository.GetByIdAsync(createTareaDto.IdProyectoOrEvento);
+                    if (proyecto != null)
+                    {
+                        var proyectoTarea = new ProyectoTarea()
+                        {
+                            IdProyecto = proyecto.Id,
+                            IdTarea = tarea.Id,
+                        };
+
+                        await _proyectoTareaRepository.AddAsync(proyectoTarea);
+                    }
+                }
+                else
+                {
+                    var evento = await _eventoRepository.GetByIdAsync(createTareaDto.IdProyectoOrEvento);
+                    if (evento != null)
+                    {
+                        var eventoTarea = new EventoTarea()
+                        {
+                            IdEvento = evento.Id,
+                            IdTarea = tarea.Id,
+                        };
+
+                        await _eventoTareaRepository.AddAsync(eventoTarea);
+                    }
+                }
+
+                await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.CommitAsync();
+
+                var tareaDto = _mapper.Map<TareaDto>(tarea);
+                return tareaDto;
+
+            } 
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                return null;
+            }
         }
 
         public async Task<TareaDto?> UpdateAsync(int id, UpdateTareaDto updateTareaDto)
@@ -127,6 +186,11 @@ namespace productivity_hub_api.Service
             }
 
             return null;
+        }
+
+        public Task<TareaDto?> AddEtiquetaAsync(CreateTareaEtiquetaDto createDto)
+        {
+            throw new NotImplementedException();
         }
     }
 }
