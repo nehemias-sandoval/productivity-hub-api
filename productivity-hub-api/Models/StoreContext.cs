@@ -9,6 +9,9 @@ namespace productivity_hub_api.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Usuario>()
+               .Property(u => u.Google).HasDefaultValue(false);
+
             modelBuilder.Entity<Tarea>()
                 .Property(t => t.Estado).HasDefaultValue(false);
 
@@ -17,6 +20,9 @@ namespace productivity_hub_api.Models
 
             modelBuilder.Entity<Proyecto>()
                 .Property(p => p.Estado).HasDefaultValue(false);
+
+            modelBuilder.Entity<Evento>()
+                .Property(e => e.Estado).HasDefaultValue(false);
 
             base.OnModelCreating(modelBuilder);
         }

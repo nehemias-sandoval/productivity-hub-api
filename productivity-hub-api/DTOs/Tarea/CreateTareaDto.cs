@@ -15,6 +15,8 @@ namespace productivity_hub_api.DTOs.Tarea
 
         public int IdEvento { get; set; }
 
+        public int IdPrioridad { get; set; }
+
         public List<CreateSubtareaDto> Subtareas { get; set; }
     }
 }

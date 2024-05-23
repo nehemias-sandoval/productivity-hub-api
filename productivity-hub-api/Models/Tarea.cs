@@ -23,6 +23,11 @@ namespace productivity_hub_api.Models
         [ForeignKey("IdPersona")]
         public Persona Persona { get; set; }
 
+        public int IdPrioridad { get; set; }
+
+        [ForeignKey("IdPrioridad")]
+        public Prioridad Prioridad { get; set; }
+
         public List<EventoTarea> EventoTareas { get; set; }
 
         public List<TareaEtiqueta> TareaEtiquetas { get; set; }

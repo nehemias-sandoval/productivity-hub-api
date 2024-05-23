@@ -14,7 +14,7 @@ namespace productivity_hub_api.Models
         [ForeignKey("IdEvento")]
         public Evento Evento { get; set; }
 
-        public int IdTarea { get; set; }
+        public int? IdTarea { get; set; }
 
         [ForeignKey("IdTarea")]
         public Tarea Tarea { get; set; }

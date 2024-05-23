@@ -17,6 +17,8 @@ namespace productivity_hub_api.Models
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
+        public bool Google { get; set; }
+
         public Persona Persona { get; set; }
 
         public List<Notificacion> Notificaciones { get; set; }

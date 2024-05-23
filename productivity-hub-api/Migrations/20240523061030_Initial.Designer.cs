@@ -12,7 +12,7 @@ using productivity_hub_api.Models;
 namespace productivity_hub_api.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20240521045234_Initial")]
+    [Migration("20240523061030_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -87,8 +87,16 @@ namespace productivity_hub_api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Estado")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("IdPersona")
+                        .HasColumnType("int");
 
                     b.Property<int>("IdTipoEvento")
                         .HasColumnType("int");
@@ -98,6 +106,8 @@ namespace productivity_hub_api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IdPersona");
 
                     b.HasIndex("IdTipoEvento");
 
@@ -146,7 +156,7 @@ namespace productivity_hub_api.Migrations
                     b.Property<int>("IdPrioridad")
                         .HasColumnType("int");
 
-                    b.Property<int>("IdTarea")
+                    b.Property<int?>("IdTarea")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -393,6 +403,9 @@ namespace productivity_hub_api.Migrations
                     b.Property<int>("IdPersona")
                         .HasColumnType("int");
 
+                    b.Property<int>("IdPrioridad")
+                        .HasColumnType("int");
+
                     b.Property<string>("Titulo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -400,6 +413,8 @@ namespace productivity_hub_api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("IdPersona");
+
+                    b.HasIndex("IdPrioridad");
 
                     b.ToTable("Tareas");
                 });
@@ -481,6 +496,11 @@ namespace productivity_hub_api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Google")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -503,11 +523,19 @@ namespace productivity_hub_api.Migrations
 
             modelBuilder.Entity("productivity_hub_api.Models.Evento", b =>
                 {
+                    b.HasOne("productivity_hub_api.Models.Persona", "Persona")
+                        .WithMany()
+                        .HasForeignKey("IdPersona")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("productivity_hub_api.Models.TipoEvento", "TipoEvento")
                         .WithMany("Eventos")
                         .HasForeignKey("IdTipoEvento")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Persona");
 
                     b.Navigation("TipoEvento");
                 });
@@ -555,9 +583,7 @@ namespace productivity_hub_api.Migrations
 
                     b.HasOne("productivity_hub_api.Models.Tarea", "Tarea")
                         .WithMany("EventoTareas")
-                        .HasForeignKey("IdTarea")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IdTarea");
 
                     b.Navigation("Evento");
 
@@ -647,7 +673,15 @@ namespace productivity_hub_api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("productivity_hub_api.Models.Prioridad", "Prioridad")
+                        .WithMany()
+                        .HasForeignKey("IdPrioridad")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Persona");
+
+                    b.Navigation("Prioridad");
                 });
 
             modelBuilder.Entity("productivity_hub_api.Models.TareaEtiqueta", b =>

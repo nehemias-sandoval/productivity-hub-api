@@ -102,33 +102,12 @@ namespace productivity_hub_api.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Google = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Usuarios", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Eventos",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Titulo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IdTipoEvento = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Eventos", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Eventos_TipoEventos_IdTipoEvento",
-                        column: x => x.IdTipoEvento,
-                        principalTable: "TipoEventos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -204,34 +183,31 @@ namespace productivity_hub_api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EventoRecordatorios",
+                name: "Eventos",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    IdEvento = table.Column<int>(type: "int", nullable: false),
-                    IdRecordatorio = table.Column<int>(type: "int", nullable: false),
-                    IdFrecuencia = table.Column<int>(type: "int", nullable: false)
+                    Titulo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Estado = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    IdTipoEvento = table.Column<int>(type: "int", nullable: false),
+                    IdPersona = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EventoRecordatorios", x => x.Id);
+                    table.PrimaryKey("PK_Eventos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_EventoRecordatorios_Eventos_IdEvento",
-                        column: x => x.IdEvento,
-                        principalTable: "Eventos",
+                        name: "FK_Eventos_Personas_IdPersona",
+                        column: x => x.IdPersona,
+                        principalTable: "Personas",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_EventoRecordatorios_Frecuencias_IdFrecuencia",
-                        column: x => x.IdFrecuencia,
-                        principalTable: "Frecuencias",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_EventoRecordatorios_Recordatorios_IdRecordatorio",
-                        column: x => x.IdRecordatorio,
-                        principalTable: "Recordatorios",
+                        name: "FK_Eventos_TipoEventos_IdTipoEvento",
+                        column: x => x.IdTipoEvento,
+                        principalTable: "TipoEventos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -268,7 +244,8 @@ namespace productivity_hub_api.Migrations
                     Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FechaLimite = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Estado = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    IdPersona = table.Column<int>(type: "int", nullable: false)
+                    IdPersona = table.Column<int>(type: "int", nullable: false),
+                    IdPrioridad = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -277,6 +254,45 @@ namespace productivity_hub_api.Migrations
                         name: "FK_Tareas_Personas_IdPersona",
                         column: x => x.IdPersona,
                         principalTable: "Personas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Tareas_Prioridades_IdPrioridad",
+                        column: x => x.IdPrioridad,
+                        principalTable: "Prioridades",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EventoRecordatorios",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdEvento = table.Column<int>(type: "int", nullable: false),
+                    IdRecordatorio = table.Column<int>(type: "int", nullable: false),
+                    IdFrecuencia = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EventoRecordatorios", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EventoRecordatorios_Eventos_IdEvento",
+                        column: x => x.IdEvento,
+                        principalTable: "Eventos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EventoRecordatorios_Frecuencias_IdFrecuencia",
+                        column: x => x.IdFrecuencia,
+                        principalTable: "Frecuencias",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EventoRecordatorios_Recordatorios_IdRecordatorio",
+                        column: x => x.IdRecordatorio,
+                        principalTable: "Recordatorios",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -288,7 +304,7 @@ namespace productivity_hub_api.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IdEvento = table.Column<int>(type: "int", nullable: false),
-                    IdTarea = table.Column<int>(type: "int", nullable: false),
+                    IdTarea = table.Column<int>(type: "int", nullable: true),
                     IdPrioridad = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -310,8 +326,7 @@ namespace productivity_hub_api.Migrations
                         name: "FK_EventosTareas_Tareas_IdTarea",
                         column: x => x.IdTarea,
                         principalTable: "Tareas",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -415,6 +430,11 @@ namespace productivity_hub_api.Migrations
                 column: "IdRecordatorio");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Eventos_IdPersona",
+                table: "Eventos",
+                column: "IdPersona");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Eventos_IdTipoEvento",
                 table: "Eventos",
                 column: "IdTipoEvento");
@@ -489,6 +509,11 @@ namespace productivity_hub_api.Migrations
                 name: "IX_Tareas_IdPersona",
                 table: "Tareas",
                 column: "IdPersona");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tareas_IdPrioridad",
+                table: "Tareas",
+                column: "IdPrioridad");
         }
 
         /// <inheritdoc />
@@ -528,9 +553,6 @@ namespace productivity_hub_api.Migrations
                 name: "TipoNotificaciones");
 
             migrationBuilder.DropTable(
-                name: "Prioridades");
-
-            migrationBuilder.DropTable(
                 name: "Proyectos");
 
             migrationBuilder.DropTable(
@@ -544,6 +566,9 @@ namespace productivity_hub_api.Migrations
 
             migrationBuilder.DropTable(
                 name: "Personas");
+
+            migrationBuilder.DropTable(
+                name: "Prioridades");
 
             migrationBuilder.DropTable(
                 name: "Usuarios");

@@ -16,10 +16,17 @@ namespace productivity_hub_api.Models
         [DataType(DataType.Date)]
         public DateTime Fecha { get; set; }
 
+        public bool Estado { get; set; }
+
         public int IdTipoEvento { get; set; }
 
         [ForeignKey("IdTipoEvento")]
         public TipoEvento TipoEvento { get; set; }
+
+        public int IdPersona { get; set; }
+
+        [ForeignKey("IdPersona")]
+        public Persona Persona { get; set; }
 
         public List<EventoTarea> EventoTareas { get; set; }
 
