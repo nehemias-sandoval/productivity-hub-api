@@ -5,7 +5,7 @@ using productivity_hub_api.Repository;
 
 namespace productivity_hub_api.Service
 {
-    public class SubtareaService : ICommonService<SubtareaDto, CreateSubtareaDto, UpdateSubtareaDto>
+    public class SubtareaService : ISubtareaService<SubtareaDto, CreateSubtareaDto, UpdateSubtareaDto>
     {
         private IRepository<Subtarea> _repositorySubtarea;
         private IMapper _mapper;
@@ -16,10 +16,13 @@ namespace productivity_hub_api.Service
             _mapper = mapper;
         }
 
-
-        public async Task<IEnumerable<SubtareaDto>> GetAllAsync()
+        public async Task<IEnumerable<SubtareaDto>> GetAllAsync(bool? pendientes)
         {
             var subtareas = await _repositorySubtarea.GetAllAsync();
+
+            if (pendientes.HasValue)
+                return subtareas.Where(st => st.Estado == pendientes.Value).Select(st => _mapper.Map<SubtareaDto>(st));
+
             return subtareas.Select(s => _mapper.Map<SubtareaDto>(s));
         }
 
@@ -56,7 +59,7 @@ namespace productivity_hub_api.Service
             if (subtarea != null)
             {
                 subtarea = _mapper.Map<UpdateSubtareaDto, Subtarea>(updateSubtareaDto, subtarea);
-
+            
                 _repositorySubtarea.Update(subtarea);
                 await _repositorySubtarea.SaveAsync();
 
@@ -85,5 +88,26 @@ namespace productivity_hub_api.Service
             return null;
         }
 
+        public async Task<SubtareaDto?> ChangeStateAsync(int id)
+        {
+            var subtarea = await _repositorySubtarea.GetByIdAsync(id);
+
+            if(subtarea != null)
+            {
+                subtarea = _mapper.Map<Subtarea>(subtarea);
+                subtarea.Estado = subtarea.Estado ? false : true;
+
+                _repositorySubtarea.Update(subtarea);
+                await _repositorySubtarea.SaveAsync();
+
+                var subtareaDto = _mapper.Map<SubtareaDto>(subtarea);
+
+                return subtareaDto;
+            }
+
+            return null;
+        }
+
+        
     }
 }

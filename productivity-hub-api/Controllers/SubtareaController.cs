@@ -14,12 +14,12 @@ namespace productivity_hub_api.Controllers
     {
         IValidator<CreateSubtareaDto> _createSubtareaValidator;
         IValidator<UpdateSubtareaDto> _updateSubtareaValidator;
-        ICommonService<SubtareaDto, CreateSubtareaDto,  UpdateSubtareaDto> _subtareaService;
+        ISubtareaService<SubtareaDto, CreateSubtareaDto, UpdateSubtareaDto> _subtareaService;
 
         public SubtareaController(
             IValidator<CreateSubtareaDto> createSubtareaValidator,
             IValidator<UpdateSubtareaDto> updateSubtareaValidator,
-            [FromKeyedServices("subtareaService")] ICommonService<SubtareaDto, CreateSubtareaDto, UpdateSubtareaDto> subtareaService)
+            [FromKeyedServices("subtareaService")] ISubtareaService<SubtareaDto, CreateSubtareaDto, UpdateSubtareaDto> subtareaService)
         {
             _createSubtareaValidator = createSubtareaValidator;
             _updateSubtareaValidator = updateSubtareaValidator;
@@ -27,7 +27,7 @@ namespace productivity_hub_api.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<SubtareaDto>> Get() => await _subtareaService.GetAllAsync();
+        public async Task<IEnumerable<SubtareaDto>> Get([FromQuery] bool? pendientes) => await _subtareaService.GetAllAsync(pendientes);
 
         [HttpGet("{id}")]
         public async Task<ActionResult<SubtareaDto>> GetById(int id)
@@ -61,6 +61,13 @@ namespace productivity_hub_api.Controllers
             }
 
             var subtareaDto = await _subtareaService.UpdateAsync(id, updateSubtareaDto);
+            return subtareaDto == null ? NotFound() : Ok(subtareaDto);
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<ActionResult<SubtareaDto>> UpdateState(int id)
+        {
+            var subtareaDto = await _subtareaService.ChangeStateAsync(id);
             return subtareaDto == null ? NotFound() : Ok(subtareaDto);
         }
 

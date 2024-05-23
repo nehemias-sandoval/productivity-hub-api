@@ -13,12 +13,12 @@ namespace productivity_hub_api.Controllers
     {
         private IValidator<CreateTareaDto> _createValidatorDto;
         private IValidator<UpdateTareaDto> _updateValidatorDto;
-        private ICommonService<TareaDto, CreateTareaDto, UpdateTareaDto> _tareaService;
+        private ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto> _tareaService;
 
         public TareaController(
             IValidator<CreateTareaDto> createValidatorDto,
             IValidator<UpdateTareaDto> updateValidatorDto,
-            [FromKeyedServices("tareaService")] ICommonService<TareaDto, CreateTareaDto, UpdateTareaDto> tareaService)
+            [FromKeyedServices("tareaService")] ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto> tareaService)
         {
             _createValidatorDto = createValidatorDto;
             _updateValidatorDto = updateValidatorDto;
@@ -27,7 +27,7 @@ namespace productivity_hub_api.Controllers
 
 
         [HttpGet]
-        public async Task<IEnumerable<TareaDto>> Get() => await _tareaService.GetAllAsync();
+        public async Task<IEnumerable<TareaDto>> Get([FromQuery] bool? pendientes) => await _tareaService.GetAllAsync(pendientes);
 
         [HttpGet("{id}")]
         public async Task<ActionResult<TareaDto>> GetById(int id)
@@ -61,6 +61,13 @@ namespace productivity_hub_api.Controllers
             }
 
             var tareaDto = await _tareaService.UpdateAsync(id, updateTareaDto);
+            return tareaDto == null ? NotFound() : Ok(tareaDto);
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<ActionResult<TareaDto>> ChangeStateAsync(int id)
+        {
+            var tareaDto = await _tareaService.ChangeStateAsync(id);
             return tareaDto == null ? NotFound() : Ok(tareaDto);
         }
 

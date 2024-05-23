@@ -6,7 +6,7 @@ using productivity_hub_api.Repository;
 
 namespace productivity_hub_api.Service
 {
-    public class TareaService : ICommonService<TareaDto, CreateTareaDto, UpdateTareaDto>
+    public class TareaService : ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto>
     {
         private IRepository<Tarea> _tareaRepository;
         private IMapper _mapper;
@@ -21,14 +21,18 @@ namespace productivity_hub_api.Service
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<IEnumerable<TareaDto>> GetAllAsync()
+        public async Task<IEnumerable<TareaDto>> GetAllAsync(bool? pendientes)
         {
             var usuarioDto = _httpContextAccessor.HttpContext?.Items["User"] as UsuarioDto;
 
+            var tareas = await _tareaRepository.GetAllAsync();
+
             if (usuarioDto != null)
             {
-                var tareas = await _tareaRepository.GetAllAsync();
-                return tareas.Where(t => t.IdPersona == usuarioDto.Persona.Id).Select(t => _mapper.Map<TareaDto>(t));
+                if (pendientes.HasValue)
+                    return tareas.Where(t => t.Estado == pendientes.Value && t.IdPersona == usuarioDto.Persona.Id).Select(t => _mapper.Map<TareaDto>(t));
+                else
+                    return tareas.Where(t => t.IdPersona == usuarioDto.Persona.Id).Select(t => _mapper.Map<TareaDto>(t));
             }
 
             return Enumerable.Empty<TareaDto>();
@@ -98,6 +102,26 @@ namespace productivity_hub_api.Service
 
                 _tareaRepository.Delete(tarea);
                 await _tareaRepository.SaveAsync();
+
+                return tareaDto;
+            }
+
+            return null;
+        }
+
+        public async Task<TareaDto?> ChangeStateAsync(int id)
+        {
+            var tarea = await _tareaRepository.GetByIdAsync(id);
+
+            if(tarea != null)
+            {
+                tarea = _mapper.Map<Tarea>(tarea);
+                tarea.Estado = tarea.Estado ? false : true;
+
+                _tareaRepository.Update(tarea);
+                await _tareaRepository.SaveAsync();
+
+                var tareaDto = _mapper.Map<TareaDto>(tarea);
 
                 return tareaDto;
             }

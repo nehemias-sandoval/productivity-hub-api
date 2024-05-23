@@ -92,8 +92,8 @@ builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSet
 builder.Services.AddScoped<IUsuarioService<
     UsuarioDto, CreateUsuarioDto, UpdateUsuarioDto, AuthenticateReqDto, AuthenticateResDto>, UsuarioService>();
 builder.Services.AddKeyedScoped<ICommonService<ProyectoDto, CreateProyectoDto, UpdateProyectoDto>, ProyectoService>("proyectoService");
-builder.Services.AddKeyedScoped<ICommonService<TareaDto, CreateTareaDto, UpdateTareaDto>, TareaService>("tareaService");
-builder.Services.AddKeyedScoped<ICommonService<SubtareaDto, CreateSubtareaDto, UpdateSubtareaDto>, SubtareaService>("subtareaService");
+builder.Services.AddKeyedScoped<ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto>, TareaService>("tareaService");
+builder.Services.AddKeyedScoped<ISubtareaService<SubtareaDto, CreateSubtareaDto, UpdateSubtareaDto>, SubtareaService>("subtareaService");
 
 // Entity Framework
 builder.Services.AddDbContext<StoreContext>(options =>
