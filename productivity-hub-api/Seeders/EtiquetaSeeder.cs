@@ -14,9 +14,9 @@ namespace productivity_hub_api.Seeders
                 {
                     var etiquetas = new List<Etiqueta>
                     {
-                        new Etiqueta {Nombre = "Pendiente", Color = ""},
-                        new Etiqueta {Nombre = "En Progreso", Color = ""},
-                        new Etiqueta {Nombre = "Completada", Color = ""}
+                        new Etiqueta {Nombre = "Pendiente", Color = "#f23f42"},
+                        new Etiqueta {Nombre = "En Progreso", Color = "#faa61a"},
+                        new Etiqueta {Nombre = "Completada", Color = "#219e56"}
                     };
 
                     context.Etiquetas.AddRange(etiquetas);

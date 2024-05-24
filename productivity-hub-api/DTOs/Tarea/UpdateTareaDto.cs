@@ -10,8 +10,6 @@ namespace productivity_hub_api.DTOs.Tarea
 
         public DateTime FechaLimite { get; set; }
 
-        public bool Estado { get; set; }
-
         public int IdPrioridad { get; set; }
     }
 }

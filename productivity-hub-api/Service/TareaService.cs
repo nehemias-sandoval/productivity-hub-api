@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
 using productivity_hub_api.DTOs.Auth;
 using productivity_hub_api.DTOs.Tarea;
-using productivity_hub_api.DTOs.TareaEtiqueta;
 using productivity_hub_api.Models;
 using productivity_hub_api.Repository;
 
 namespace productivity_hub_api.Service
 {
-    public class TareaService : ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto, CreateTareaEtiquetaDto>
+    public class TareaService : ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto>
     {
         private IUnitOfWork _unitOfWork;
         private IRepository<Tarea> _tareaRepository;
@@ -186,11 +185,6 @@ namespace productivity_hub_api.Service
             }
 
             return null;
-        }
-
-        public Task<TareaDto?> AddEtiquetaAsync(CreateTareaEtiquetaDto createDto)
-        {
-            throw new NotImplementedException();
         }
     }
 }

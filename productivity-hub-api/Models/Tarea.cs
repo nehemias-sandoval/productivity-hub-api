@@ -28,9 +28,12 @@ namespace productivity_hub_api.Models
         [ForeignKey("IdPrioridad")]
         public Prioridad Prioridad { get; set; }
 
-        public List<EventoTarea> EventoTareas { get; set; }
+        public int IdEtiqueta { get; set; }
 
-        public List<TareaEtiqueta> TareaEtiquetas { get; set; }
+        [ForeignKey("IdEtiqueta")]
+        public Etiqueta Etiqueta { get; set; }
+
+        public List<EventoTarea> EventoTareas { get; set; }
 
         public List<Subtarea> Subtareas { get; set; }
 

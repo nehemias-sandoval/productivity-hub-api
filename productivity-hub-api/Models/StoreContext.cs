@@ -15,6 +15,9 @@ namespace productivity_hub_api.Models
             modelBuilder.Entity<Tarea>()
                 .Property(t => t.Estado).HasDefaultValue(false);
 
+            modelBuilder.Entity<Tarea>()
+                .Property(t => t.IdEtiqueta).HasDefaultValue(1); // Pendiente
+
             modelBuilder.Entity<Subtarea>()
                 .Property(s => s.Estado).HasDefaultValue(false);
 
@@ -57,8 +60,5 @@ namespace productivity_hub_api.Models
         public DbSet<EventoTarea> EventosTareas { get; set;}
 
         public DbSet<ProyectoTarea> ProyectoTareas { get; set; }
-
-        public DbSet<TareaEtiqueta> TareaEtiquetas { get; set; }
-
     }
 }

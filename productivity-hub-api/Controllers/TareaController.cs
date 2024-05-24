@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using productivity_hub_api.DTOs.Auth;
 using productivity_hub_api.DTOs.Tarea;
-using productivity_hub_api.DTOs.TareaEtiqueta;
 using productivity_hub_api.helpers;
 using productivity_hub_api.Models;
 using productivity_hub_api.Repository;
@@ -17,7 +16,7 @@ namespace productivity_hub_api.Controllers
     {
         private IValidator<CreateTareaDto> _createValidatorDto;
         private IValidator<UpdateTareaDto> _updateValidatorDto;
-        private ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto, CreateTareaEtiquetaDto> _tareaService;
+        private ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto> _tareaService;
         private IRepository<Proyecto> _proyectoRepository;
         private IRepository<Evento> _eventoRepository;
         private IHttpContextAccessor _httpContextAccessor;
@@ -25,7 +24,7 @@ namespace productivity_hub_api.Controllers
         public TareaController(
             IValidator<CreateTareaDto> createValidatorDto,
             IValidator<UpdateTareaDto> updateValidatorDto,
-            [FromKeyedServices("tareaService")] ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto, CreateTareaEtiquetaDto> tareaService,
+            [FromKeyedServices("tareaService")] ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto> tareaService,
             [FromKeyedServices("proyectoRepository")] IRepository<Proyecto> proyectoRepository,
             [FromKeyedServices("eventoRepository")] IRepository<Evento> eventoRepository,
             IHttpContextAccessor httpContextAccessor)
@@ -109,12 +108,6 @@ namespace productivity_hub_api.Controllers
         {
             var tareaDto = await _tareaService.DeleteAsync(id);
             return tareaDto == null ? NotFound() : Ok(tareaDto); 
-        }
-
-        [HttpPost("{id}")]
-        public async Task<ActionResult<TareaEtiquetaDto>> AddEtiqueta(CreateTareaEtiquetaDto createTareaEtiquetaDto)
-        {
-            throw new NotImplementedException();
         }
     }
 }

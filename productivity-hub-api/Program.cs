@@ -17,7 +17,6 @@ using productivity_hub_api.Validators.Subtarea;
 using productivity_hub_api.Validators.Tarea;
 using productivity_hub_api.DTOs.Evento;
 using productivity_hub_api.Validators.Evento;
-using productivity_hub_api.DTOs.TareaEtiqueta;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -106,7 +105,7 @@ builder.Services.AddScoped<IUsuarioService<
     UsuarioDto, CreateUsuarioDto, UpdateUsuarioDto, AuthenticateReqDto, AuthenticateResDto>, UsuarioService>();
 builder.Services.AddKeyedScoped<ICommonService<ProyectoDto, CreateProyectoDto, UpdateProyectoDto>, ProyectoService>("proyectoService");
 builder.Services.AddKeyedScoped<ICommonService<EventoDto, CreateEventoDto, UpdateEventoDto>, EventoService>("eventoService");
-builder.Services.AddKeyedScoped<ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto, CreateTareaEtiquetaDto>, TareaService>("tareaService");
+builder.Services.AddKeyedScoped<ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto>, TareaService>("tareaService");
 builder.Services.AddKeyedScoped<ISubtareaService<SubtareaDto, CreateSubtareaDto, UpdateSubtareaDto>, SubtareaService>("subtareaService");
 
 // Entity Framework

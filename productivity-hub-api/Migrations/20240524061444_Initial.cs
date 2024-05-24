@@ -244,11 +244,18 @@ namespace productivity_hub_api.Migrations
                     FechaLimite = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Estado = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     IdPersona = table.Column<int>(type: "int", nullable: false),
-                    IdPrioridad = table.Column<int>(type: "int", nullable: false)
+                    IdPrioridad = table.Column<int>(type: "int", nullable: false),
+                    IdEtiqueta = table.Column<int>(type: "int", nullable: false, defaultValue: 1)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tareas", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Tareas_Etiquetas_IdEtiqueta",
+                        column: x => x.IdEtiqueta,
+                        principalTable: "Etiquetas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Tareas_Personas_IdPersona",
                         column: x => x.IdPersona,
@@ -367,32 +374,6 @@ namespace productivity_hub_api.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "TareaEtiquetas",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    IdTarea = table.Column<int>(type: "int", nullable: false),
-                    IdEtiqueta = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TareaEtiquetas", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_TareaEtiquetas_Etiquetas_IdEtiqueta",
-                        column: x => x.IdEtiqueta,
-                        principalTable: "Etiquetas",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TareaEtiquetas_Tareas_IdTarea",
-                        column: x => x.IdTarea,
-                        principalTable: "Tareas",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Configuraciones_IdUsuario",
                 table: "Configuraciones",
@@ -471,14 +452,9 @@ namespace productivity_hub_api.Migrations
                 column: "IdTarea");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TareaEtiquetas_IdEtiqueta",
-                table: "TareaEtiquetas",
+                name: "IX_Tareas_IdEtiqueta",
+                table: "Tareas",
                 column: "IdEtiqueta");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TareaEtiquetas_IdTarea",
-                table: "TareaEtiquetas",
-                column: "IdTarea");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tareas_IdPersona",
@@ -513,9 +489,6 @@ namespace productivity_hub_api.Migrations
                 name: "Subtareas");
 
             migrationBuilder.DropTable(
-                name: "TareaEtiquetas");
-
-            migrationBuilder.DropTable(
                 name: "Frecuencias");
 
             migrationBuilder.DropTable(
@@ -531,13 +504,13 @@ namespace productivity_hub_api.Migrations
                 name: "Proyectos");
 
             migrationBuilder.DropTable(
-                name: "Etiquetas");
-
-            migrationBuilder.DropTable(
                 name: "Tareas");
 
             migrationBuilder.DropTable(
                 name: "TipoEventos");
+
+            migrationBuilder.DropTable(
+                name: "Etiquetas");
 
             migrationBuilder.DropTable(
                 name: "Personas");

@@ -12,7 +12,7 @@ using productivity_hub_api.Models;
 namespace productivity_hub_api.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20240523210618_Initial")]
+    [Migration("20240524061444_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -385,6 +385,11 @@ namespace productivity_hub_api.Migrations
                     b.Property<DateTime>("FechaLimite")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("IdEtiqueta")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
                     b.Property<int>("IdPersona")
                         .HasColumnType("int");
 
@@ -397,34 +402,13 @@ namespace productivity_hub_api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("IdEtiqueta");
+
                     b.HasIndex("IdPersona");
 
                     b.HasIndex("IdPrioridad");
 
                     b.ToTable("Tareas");
-                });
-
-            modelBuilder.Entity("productivity_hub_api.Models.TareaEtiqueta", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("IdEtiqueta")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdTarea")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdEtiqueta");
-
-                    b.HasIndex("IdTarea");
-
-                    b.ToTable("TareaEtiquetas");
                 });
 
             modelBuilder.Entity("productivity_hub_api.Models.TipoEvento", b =>
@@ -636,6 +620,12 @@ namespace productivity_hub_api.Migrations
 
             modelBuilder.Entity("productivity_hub_api.Models.Tarea", b =>
                 {
+                    b.HasOne("productivity_hub_api.Models.Etiqueta", "Etiqueta")
+                        .WithMany()
+                        .HasForeignKey("IdEtiqueta")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("productivity_hub_api.Models.Persona", "Persona")
                         .WithMany("Tareas")
                         .HasForeignKey("IdPersona")
@@ -648,33 +638,11 @@ namespace productivity_hub_api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Etiqueta");
+
                     b.Navigation("Persona");
 
                     b.Navigation("Prioridad");
-                });
-
-            modelBuilder.Entity("productivity_hub_api.Models.TareaEtiqueta", b =>
-                {
-                    b.HasOne("productivity_hub_api.Models.Etiqueta", "Etiqueta")
-                        .WithMany("TareaEtiquetas")
-                        .HasForeignKey("IdEtiqueta")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("productivity_hub_api.Models.Tarea", "Tarea")
-                        .WithMany("TareaEtiquetas")
-                        .HasForeignKey("IdTarea")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Etiqueta");
-
-                    b.Navigation("Tarea");
-                });
-
-            modelBuilder.Entity("productivity_hub_api.Models.Etiqueta", b =>
-                {
-                    b.Navigation("TareaEtiquetas");
                 });
 
             modelBuilder.Entity("productivity_hub_api.Models.Evento", b =>
@@ -711,8 +679,6 @@ namespace productivity_hub_api.Migrations
                     b.Navigation("ProyectoTareas");
 
                     b.Navigation("Subtareas");
-
-                    b.Navigation("TareaEtiquetas");
                 });
 
             modelBuilder.Entity("productivity_hub_api.Models.TipoEvento", b =>

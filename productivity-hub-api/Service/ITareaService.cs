@@ -2,7 +2,7 @@
 
 namespace productivity_hub_api.Service
 {
-    public interface ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto, CreateTareaEtiquetaDto>
+    public interface ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto>
     {
         Task<IEnumerable<TareaDto>> GetAllAsync(bool? pendientes);
 
@@ -15,7 +15,5 @@ namespace productivity_hub_api.Service
         Task<TareaDto?> DeleteAsync(int id);
 
         Task<TareaDto?> ChangeStateAsync(int id);
-
-        Task<TareaDto?> AddEtiquetaAsync(CreateTareaEtiquetaDto createDto);
     }
 }
