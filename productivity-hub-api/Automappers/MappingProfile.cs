@@ -20,6 +20,8 @@ namespace productivity_hub_api.Automappers
             CreateMap<CreateUsuarioDto, Usuario>().ReverseMap();
             CreateMap<Usuario, AuthenticateResDto>().ReverseMap();
 
+            // Catalogos
+
             // Persona
             CreateMap<CreatePersonaDto, Persona>().ReverseMap();
             CreateMap<Persona, PersonaDto>().ReverseMap();

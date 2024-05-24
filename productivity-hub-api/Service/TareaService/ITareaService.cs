@@ -1,8 +1,8 @@
 ﻿using productivity_hub_api.DTOs.Tarea;
 
-namespace productivity_hub_api.Service
+namespace productivity_hub_api.Service.TareaService
 {
-    public interface ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto>
+    public interface ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto, ChangeEtiquetaTareaDto>
     {
         Task<IEnumerable<TareaDto>> GetAllAsync(bool? pendientes);
 
@@ -14,6 +14,8 @@ namespace productivity_hub_api.Service
 
         Task<TareaDto?> DeleteAsync(int id);
 
-        Task<TareaDto?> ChangeStateAsync(int id);
+        Task<TareaDto?> ChangeEtiquetaAsync(int id, ChangeEtiquetaTareaDto changeDto);
+
+        Task ChangeEstadoAsync(int id);
     }
 }

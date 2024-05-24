@@ -1,6 +1,6 @@
 ﻿using productivity_hub_api.Models;
 
-namespace productivity_hub_api.Repository
+namespace productivity_hub_api.Repository.AuthRepository
 {
     public interface IUsuarioRepository
     {
@@ -11,7 +11,5 @@ namespace productivity_hub_api.Repository
         Task AddAsync(Usuario usuario);
 
         void Update(Usuario usuario);
-
-        Task SaveAsync();
     }
 }

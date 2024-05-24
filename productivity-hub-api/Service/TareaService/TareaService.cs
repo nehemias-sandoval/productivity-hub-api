@@ -3,10 +3,13 @@ using productivity_hub_api.DTOs.Auth;
 using productivity_hub_api.DTOs.Tarea;
 using productivity_hub_api.Models;
 using productivity_hub_api.Repository;
+using productivity_hub_api.Repository.CatalogoRepository;
+using productivity_hub_api.Repository.EventoRepository;
+using productivity_hub_api.Repository.ProyectoRepository;
 
-namespace productivity_hub_api.Service
+namespace productivity_hub_api.Service.TareaService
 {
-    public class TareaService : ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto>
+    public class TareaService : ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto, ChangeEtiquetaTareaDto>
     {
         private IUnitOfWork _unitOfWork;
         private IRepository<Tarea> _tareaRepository;
@@ -14,16 +17,18 @@ namespace productivity_hub_api.Service
         private IRepository<Evento> _eventoRepository;
         private ProyectoTareaRepository _proyectoTareaRepository;
         private EventoTareaRepository _eventoTareaRepository;
+        private CatalogoRepository _catalogoRepository;
         private IMapper _mapper;
         private IHttpContextAccessor _httpContextAccessor;
 
         public TareaService(
             IUnitOfWork unitOfWork,
-            [FromKeyedServices("tareaRepository")] IRepository<Tarea> tareaRepository, 
+            [FromKeyedServices("tareaRepository")] IRepository<Tarea> tareaRepository,
             [FromKeyedServices("proyectoRepository")] IRepository<Proyecto> proyectoRepository,
             [FromKeyedServices("eventoRepository")] IRepository<Evento> eventoRepository,
             ProyectoTareaRepository proyectoTareaRepository,
             EventoTareaRepository eventoTareaRepository,
+            CatalogoRepository catalogoRepository,
             IMapper mapper,
             IHttpContextAccessor httpContextAccessor)
         {
@@ -34,6 +39,7 @@ namespace productivity_hub_api.Service
             _eventoRepository = eventoRepository;
             _proyectoTareaRepository = proyectoTareaRepository;
             _eventoTareaRepository = eventoTareaRepository;
+            _catalogoRepository = catalogoRepository;
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -121,7 +127,7 @@ namespace productivity_hub_api.Service
                 var tareaDto = _mapper.Map<TareaDto>(tarea);
                 return tareaDto;
 
-            } 
+            }
             catch (Exception ex)
             {
                 await _unitOfWork.RollbackAsync();
@@ -134,16 +140,16 @@ namespace productivity_hub_api.Service
             var usuarioDto = _httpContextAccessor.HttpContext?.Items["User"] as UsuarioDto;
             var tarea = await _tareaRepository.GetByIdAsync(id);
 
-            if(tarea != null && usuarioDto != null && tarea.IdPersona == usuarioDto.Persona.Id)
+            if (tarea != null && usuarioDto != null && tarea.IdPersona == usuarioDto.Persona.Id)
             {
-                tarea = _mapper.Map<UpdateTareaDto, Tarea>(updateTareaDto, tarea);
+                tarea = _mapper.Map(updateTareaDto, tarea);
 
                 _tareaRepository.Update(tarea);
-                await _tareaRepository.SaveAsync();
+                await _unitOfWork.SaveChangesAsync();
 
                 var tareaDto = _mapper.Map<TareaDto>(tarea);
 
-                return tareaDto;        
+                return tareaDto;
             }
 
             return null;
@@ -159,7 +165,7 @@ namespace productivity_hub_api.Service
                 var tareaDto = _mapper.Map<TareaDto>(tarea);
 
                 _tareaRepository.Delete(tarea);
-                await _tareaRepository.SaveAsync();
+                await _unitOfWork.SaveChangesAsync();
 
                 return tareaDto;
             }
@@ -167,17 +173,18 @@ namespace productivity_hub_api.Service
             return null;
         }
 
-        public async Task<TareaDto?> ChangeStateAsync(int id)
+        public async Task<TareaDto?> ChangeEtiquetaAsync(int id, ChangeEtiquetaTareaDto changeEtiquetaTareaDto)
         {
             var tarea = await _tareaRepository.GetByIdAsync(id);
+            var etiqueta = await _catalogoRepository.GetEtiquetaByIdAsync(changeEtiquetaTareaDto.IdEtiqueta);
 
-            if(tarea != null)
+            if (tarea != null && etiqueta != null)
             {
                 tarea = _mapper.Map<Tarea>(tarea);
-                tarea.Estado = tarea.Estado ? false : true;
+                tarea.IdEtiqueta = changeEtiquetaTareaDto.IdEtiqueta;
 
                 _tareaRepository.Update(tarea);
-                await _tareaRepository.SaveAsync();
+                await _unitOfWork.SaveChangesAsync();
 
                 var tareaDto = _mapper.Map<TareaDto>(tarea);
 
@@ -185,6 +192,11 @@ namespace productivity_hub_api.Service
             }
 
             return null;
+        }
+
+        public Task ChangeEstadoAsync(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,8 +1,9 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using productivity_hub_api.DTOs.Proyecto;
+using productivity_hub_api.DTOs.Tarea;
 using productivity_hub_api.helpers;
-using productivity_hub_api.Service;
+using productivity_hub_api.Service.ProyectoService;
 
 namespace productivity_hub_api.Controllers
 {
@@ -13,12 +14,12 @@ namespace productivity_hub_api.Controllers
     {
         private IValidator<CreateProyectoDto> _createProyectoValidator;
         private IValidator<UpdateProyectoDto> _updateProyectoValidator;
-        private ICommonService<ProyectoDto, CreateProyectoDto, UpdateProyectoDto> _proyectoService;
+        private IProyectoService<ProyectoDto, CreateProyectoDto, UpdateProyectoDto> _proyectoService;
 
         public ProyectoController(
             IValidator<CreateProyectoDto> createProyectoValidator,
             IValidator<UpdateProyectoDto> updateProyectoValidator,
-            [FromKeyedServices("proyectoService")] ICommonService<ProyectoDto, CreateProyectoDto, UpdateProyectoDto> proyectoService)
+            [FromKeyedServices("proyectoService")] IProyectoService<ProyectoDto, CreateProyectoDto, UpdateProyectoDto> proyectoService)
         {
             _proyectoService = proyectoService;
             _createProyectoValidator = createProyectoValidator;
@@ -26,7 +27,7 @@ namespace productivity_hub_api.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<ProyectoDto>> Get() => await _proyectoService.GetAllAsync();
+        public async Task<IEnumerable<ProyectoDto>> Get([FromQuery] bool? estado) => await _proyectoService.GetAllAsync(estado);
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ProyectoDto>> GetById(int id)
@@ -46,6 +47,8 @@ namespace productivity_hub_api.Controllers
             }
 
             var proyectoDto = await _proyectoService.AddAsync(createProyectoDto);
+            if (proyectoDto == null) return StatusCode(500);
+
             return CreatedAtAction(nameof(GetById), new { id = proyectoDto.Id }, proyectoDto);
         }
 

@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using productivity_hub_api.DTOs.Evento;
-using productivity_hub_api.Service;
+using productivity_hub_api.DTOs.Tarea;
+using productivity_hub_api.Service.EventoService;
 
 namespace productivity_hub_api.Controllers
 {
@@ -12,12 +13,12 @@ namespace productivity_hub_api.Controllers
     {
         private IValidator<CreateEventoDto> _createEventoValidator;
         private IValidator<UpdateEventoDto> _updateEventoValidator;
-        private ICommonService<EventoDto, CreateEventoDto, UpdateEventoDto> _eventoService;
+        private IEventoService<EventoDto, CreateEventoDto, UpdateEventoDto> _eventoService;
 
         public EventoController(
             IValidator<CreateEventoDto> createEventoValidator,
             IValidator<UpdateEventoDto> updateEventoValidator,
-            [FromKeyedServices("eventoService")] ICommonService<EventoDto, CreateEventoDto, UpdateEventoDto> eventoService)
+            [FromKeyedServices("eventoService")] IEventoService<EventoDto, CreateEventoDto, UpdateEventoDto> eventoService)
         {
             _eventoService = eventoService;
             _createEventoValidator = createEventoValidator;
@@ -25,7 +26,7 @@ namespace productivity_hub_api.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<EventoDto>> Get() => await _eventoService.GetAllAsync();
+        public async Task<IEnumerable<EventoDto>> Get([FromQuery] bool? vencido) => await _eventoService.GetAllAsync(vencido);
 
         [HttpGet("{id}")]
         public async Task<ActionResult<EventoDto>> GetById(int id)
@@ -44,8 +45,10 @@ namespace productivity_hub_api.Controllers
                 return BadRequest(validationResult.Errors);
             }
 
-            var proyectoDto = await _eventoService.AddAsync(createEventoDto);
-            return CreatedAtAction(nameof(GetById), new { id = proyectoDto.Id }, proyectoDto);
+            var eventoDto = await _eventoService.AddAsync(createEventoDto);
+            if (eventoDto == null) return StatusCode(500);
+
+            return CreatedAtAction(nameof(GetById), new { id = eventoDto.Id }, eventoDto);
         }
 
         [HttpPut("{id}")]

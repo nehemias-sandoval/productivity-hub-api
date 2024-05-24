@@ -8,15 +8,23 @@ using productivity_hub_api.helpers;
 using productivity_hub_api.DTOs.Subtarea;
 using productivity_hub_api.DTOs.Tarea;
 using productivity_hub_api.Models;
-using productivity_hub_api.Repository;
 using productivity_hub_api.Seeders;
-using productivity_hub_api.Service;
 using productivity_hub_api.Validators.Auth;
 using productivity_hub_api.Validators.Proyecto;
 using productivity_hub_api.Validators.Subtarea;
 using productivity_hub_api.Validators.Tarea;
 using productivity_hub_api.DTOs.Evento;
 using productivity_hub_api.Validators.Evento;
+using productivity_hub_api.Repository;
+using productivity_hub_api.Repository.AuthRepository;
+using productivity_hub_api.Repository.ProyectoRepository;
+using productivity_hub_api.Repository.EventoRepository;
+using productivity_hub_api.Repository.TareaRepository;
+using productivity_hub_api.Repository.CatalogoRepository;
+using productivity_hub_api.Service.AuthService;
+using productivity_hub_api.Service.EventoService;
+using productivity_hub_api.Service.ProyectoService;
+using productivity_hub_api.Service.TareaService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -103,9 +111,9 @@ builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSet
 // Service
 builder.Services.AddScoped<IUsuarioService<
     UsuarioDto, CreateUsuarioDto, UpdateUsuarioDto, AuthenticateReqDto, AuthenticateResDto>, UsuarioService>();
-builder.Services.AddKeyedScoped<ICommonService<ProyectoDto, CreateProyectoDto, UpdateProyectoDto>, ProyectoService>("proyectoService");
-builder.Services.AddKeyedScoped<ICommonService<EventoDto, CreateEventoDto, UpdateEventoDto>, EventoService>("eventoService");
-builder.Services.AddKeyedScoped<ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto>, TareaService>("tareaService");
+builder.Services.AddKeyedScoped<IProyectoService<ProyectoDto, CreateProyectoDto, UpdateProyectoDto>, ProyectoService>("proyectoService");
+builder.Services.AddKeyedScoped<IEventoService<EventoDto, CreateEventoDto, UpdateEventoDto>, EventoService>("eventoService");
+builder.Services.AddKeyedScoped<ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto, ChangeEtiquetaTareaDto>, TareaService>("tareaService");
 builder.Services.AddKeyedScoped<ISubtareaService<SubtareaDto, CreateSubtareaDto, UpdateSubtareaDto>, SubtareaService>("subtareaService");
 
 // Entity Framework
@@ -124,6 +132,7 @@ using (var scope = app.Services.CreateScope())
     PrioridadSeeder.Initialize(services);
     TipoNotificacionSeeder.Initialize(services);
     TipoEventoSeeder.Initialize(services);
+    EtiquetaSeeder.Initialize(services);
 }
 
 // Configure the HTTP request pipeline.

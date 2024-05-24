@@ -1,6 +1,6 @@
 ﻿using productivity_hub_api.Models;
 
-namespace productivity_hub_api.Repository
+namespace productivity_hub_api.Repository.ProyectoRepository
 {
     public class ProyectoTareaRepository
     {

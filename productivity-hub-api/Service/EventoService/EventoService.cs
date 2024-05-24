@@ -4,32 +4,46 @@ using productivity_hub_api.DTOs.Evento;
 using productivity_hub_api.Models;
 using productivity_hub_api.Repository;
 
-namespace productivity_hub_api.Service
+namespace productivity_hub_api.Service.EventoService
 {
-    public class EventoService : ICommonService<EventoDto, CreateEventoDto, UpdateEventoDto>
+    public class EventoService : IEventoService<EventoDto, CreateEventoDto, UpdateEventoDto>
     {
+        private IUnitOfWork _unitOfWork;
         private IRepository<Evento> _eventoRepository;
         private IMapper _mapper;
         private IHttpContextAccessor _httpContextAccessor;
 
         public EventoService(
+            IUnitOfWork unitOfWork,
             [FromKeyedServices("eventoRepository")] IRepository<Evento> eventoRepository,
             IMapper mapper,
             IHttpContextAccessor httpContextAccessor)
         {
+            _unitOfWork = unitOfWork;
             _eventoRepository = eventoRepository;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<IEnumerable<EventoDto>> GetAllAsync()
+        public async Task<IEnumerable<EventoDto>> GetAllAsync(bool? vencido)
         {
             var usuarioDto = _httpContextAccessor.HttpContext?.Items["User"] as UsuarioDto;
+            var eventos = await _eventoRepository.GetAllAsync();
 
             if (usuarioDto != null)
             {
-                var eventos = await _eventoRepository.GetAllAsync();
-                return eventos.Where(e => e.IdPersona == usuarioDto.Persona.Id).Select(e => _mapper.Map<EventoDto>(e));
+                if (vencido.HasValue)
+                {
+                    if (vencido.Value)
+                        return eventos.Where(e => e.Fecha > DateTime.Now && e.IdPersona == usuarioDto.Persona.Id).Select(e => _mapper.Map<EventoDto>(e));
+
+                    else
+                        return eventos.Where(e => e.Fecha <= DateTime.Now && e.IdPersona == usuarioDto.Persona.Id).Select(e => _mapper.Map<EventoDto>(e));
+                }
+                else
+                {
+                    return eventos.Where(e => e.IdPersona == usuarioDto.Persona.Id).Select(e => _mapper.Map<EventoDto>(e));
+                }
             }
 
             return Enumerable.Empty<EventoDto>();
@@ -58,7 +72,7 @@ namespace productivity_hub_api.Service
             if (usuarioDto != null) evento.IdPersona = usuarioDto.Persona.Id;
 
             await _eventoRepository.AddAsync(evento);
-            await _eventoRepository.SaveAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             var eventoDto = _mapper.Map<EventoDto>(evento);
             return eventoDto;
@@ -71,10 +85,10 @@ namespace productivity_hub_api.Service
 
             if (evento != null && usuarioDto != null && evento.IdPersona == usuarioDto.Persona.Id)
             {
-                evento = _mapper.Map<UpdateEventoDto, Evento>(updateEventoDto, evento);
+                evento = _mapper.Map(updateEventoDto, evento);
 
                 _eventoRepository.Update(evento);
-                await _eventoRepository.SaveAsync();
+                await _unitOfWork.SaveChangesAsync();
 
                 var eventoDto = _mapper.Map<EventoDto>(evento);
 
@@ -94,7 +108,7 @@ namespace productivity_hub_api.Service
                 var eventoDto = _mapper.Map<EventoDto>(evento);
 
                 _eventoRepository.Delete(evento);
-                await _eventoRepository.SaveAsync();
+                await _unitOfWork.SaveChangesAsync();
 
                 return eventoDto;
             }

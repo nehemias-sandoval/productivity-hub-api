@@ -2,11 +2,10 @@
 using productivity_hub_api.DTOs.Auth;
 using productivity_hub_api.Models;
 
-namespace productivity_hub_api.Repository
+namespace productivity_hub_api.Repository.TareaRepository
 {
     public class SubtareaRepository : IRepository<Subtarea>
     {
-
         StoreContext _context;
         private IHttpContextAccessor _httpContextAccessor;
 
@@ -20,7 +19,7 @@ namespace productivity_hub_api.Repository
         {
             var usuarioDto = _httpContextAccessor.HttpContext?.Items["User"] as UsuarioDto;
 
-            if(usuarioDto != null)
+            if (usuarioDto != null)
                 return await _context.Subtareas.Include(st => st.Tarea).Where(st => st.Tarea.IdPersona == usuarioDto.Persona.Id).ToListAsync();
 
             return Enumerable.Empty<Subtarea>();
@@ -45,7 +44,5 @@ namespace productivity_hub_api.Repository
         }
 
         public void Delete(Subtarea subtarea) => _context.Subtareas.Remove(subtarea);
-
-        public Task SaveAsync() => _context.SaveChangesAsync(); 
     }
 }

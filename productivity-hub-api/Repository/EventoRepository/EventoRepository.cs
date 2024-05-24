@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using productivity_hub_api.Models;
 
-namespace productivity_hub_api.Repository
+namespace productivity_hub_api.Repository.EventoRepository
 {
     public class EventoRepository : IRepository<Evento>
     {
@@ -25,7 +25,5 @@ namespace productivity_hub_api.Repository
         }
 
         public void Delete(Evento evento) => _context.Eventos.Remove(evento);
-
-        public async Task SaveAsync() => await _context.SaveChangesAsync();
     }
 }

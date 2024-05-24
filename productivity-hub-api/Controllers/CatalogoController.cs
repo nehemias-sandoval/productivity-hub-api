@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using productivity_hub_api.helpers;
 using productivity_hub_api.Models;
-using productivity_hub_api.Repository;
+using productivity_hub_api.Repository.CatalogoRepository;
 
 namespace productivity_hub_api.Controllers
 {

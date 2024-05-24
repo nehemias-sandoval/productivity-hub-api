@@ -1,9 +1,9 @@
 ﻿using productivity_hub_api.DTOs.Subtarea;
 using productivity_hub_api.DTOs.Tarea;
 
-namespace productivity_hub_api.Service
+namespace productivity_hub_api.Service.TareaService
 {
-    public interface ISubtareaService<SubtareaDto, CreateSubtareaDto, UpdateSubtareaDto> 
+    public interface ISubtareaService<SubtareaDto, CreateSubtareaDto, UpdateSubtareaDto>
     {
         Task<IEnumerable<SubtareaDto>> GetAllAsync(bool? pendientes);
 

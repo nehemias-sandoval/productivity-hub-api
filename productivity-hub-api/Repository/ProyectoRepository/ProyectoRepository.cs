@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using productivity_hub_api.Models;
 
-namespace productivity_hub_api.Repository
+namespace productivity_hub_api.Repository.ProyectoRepository
 {
     public class ProyectoRepository : IRepository<Proyecto>
     {
@@ -25,7 +25,5 @@ namespace productivity_hub_api.Repository
         }
 
         public void Delete(Proyecto proyecto) => _context.Proyectos.Remove(proyecto);
-
-        public async Task SaveAsync() => await _context.SaveChangesAsync();
     }
 }

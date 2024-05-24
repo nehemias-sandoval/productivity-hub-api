@@ -5,7 +5,8 @@ using productivity_hub_api.DTOs.Tarea;
 using productivity_hub_api.helpers;
 using productivity_hub_api.Models;
 using productivity_hub_api.Repository;
-using productivity_hub_api.Service;
+using productivity_hub_api.Repository.CatalogoRepository;
+using productivity_hub_api.Service.TareaService;
 
 namespace productivity_hub_api.Controllers
 {
@@ -16,17 +17,19 @@ namespace productivity_hub_api.Controllers
     {
         private IValidator<CreateTareaDto> _createValidatorDto;
         private IValidator<UpdateTareaDto> _updateValidatorDto;
-        private ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto> _tareaService;
+        private ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto, ChangeEtiquetaTareaDto> _tareaService;
         private IRepository<Proyecto> _proyectoRepository;
         private IRepository<Evento> _eventoRepository;
+        private CatalogoRepository _catalogoRepository;
         private IHttpContextAccessor _httpContextAccessor;
 
         public TareaController(
             IValidator<CreateTareaDto> createValidatorDto,
             IValidator<UpdateTareaDto> updateValidatorDto,
-            [FromKeyedServices("tareaService")] ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto> tareaService,
+            [FromKeyedServices("tareaService")] ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto, ChangeEtiquetaTareaDto> tareaService,
             [FromKeyedServices("proyectoRepository")] IRepository<Proyecto> proyectoRepository,
             [FromKeyedServices("eventoRepository")] IRepository<Evento> eventoRepository,
+            CatalogoRepository catalogoRepository,
             IHttpContextAccessor httpContextAccessor)
         {
             _createValidatorDto = createValidatorDto;
@@ -34,6 +37,7 @@ namespace productivity_hub_api.Controllers
             _tareaService = tareaService;
             _proyectoRepository = proyectoRepository;
             _eventoRepository = eventoRepository;
+            _catalogoRepository = catalogoRepository;
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -76,6 +80,9 @@ namespace productivity_hub_api.Controllers
                     if (evento.IdPersona != usuarioDto.Persona.Id) return Unauthorized(new { message = "El Evento no le pertenece" });
             }
 
+            var prioridad = _catalogoRepository.GetPrioridadByIdAsync(createTareaDto.IdPrioridad);
+            if (prioridad == null) return NotFound(new { message = "Prioridad no encontrada" });
+
             var tareaDto = await _tareaService.AddAsync(createTareaDto);
             if (tareaDto == null) return StatusCode(500);
 
@@ -97,9 +104,9 @@ namespace productivity_hub_api.Controllers
         }
 
         [HttpPatch("{id}")]
-        public async Task<ActionResult<TareaDto>> ChangeStateAsync(int id)
+        public async Task<ActionResult<TareaDto>> ChangeEtiquetaAsync(ChangeEtiquetaTareaDto changeEtiquetaTareaDto, int id)
         {
-            var tareaDto = await _tareaService.ChangeStateAsync(id);
+            var tareaDto = await _tareaService.ChangeEtiquetaAsync(id, changeEtiquetaTareaDto);
             return tareaDto == null ? NotFound() : Ok(tareaDto);
         }
 

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using productivity_hub_api.Models;
 
-namespace productivity_hub_api.Repository
+namespace productivity_hub_api.Repository.AuthRepository
 {
     public class UsuarioRepository : IUsuarioRepository
     {
@@ -34,7 +34,5 @@ namespace productivity_hub_api.Repository
             _context.Attach(usuario);
             _context.Usuarios.Entry(usuario).State = EntityState.Modified;
         }
-
-        public async Task SaveAsync() => await _context.SaveChangesAsync();
     }
 }

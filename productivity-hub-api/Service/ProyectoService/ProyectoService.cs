@@ -4,32 +4,39 @@ using productivity_hub_api.DTOs.Proyecto;
 using productivity_hub_api.Models;
 using productivity_hub_api.Repository;
 
-namespace productivity_hub_api.Service
+namespace productivity_hub_api.Service.ProyectoService
 {
-    public class ProyectoService : ICommonService<ProyectoDto, CreateProyectoDto, UpdateProyectoDto>
+    public class ProyectoService : IProyectoService<ProyectoDto, CreateProyectoDto, UpdateProyectoDto>
     {
+        private IUnitOfWork _unitOfWork;
         private IRepository<Proyecto> _proyectoRepository;
         private IMapper _mapper;
         private IHttpContextAccessor _httpContextAccessor;
 
         public ProyectoService(
-            [FromKeyedServices("proyectoRepository")] IRepository<Proyecto> proyectoRepository, 
-            IMapper mapper, 
+            IUnitOfWork unitOfWork,
+            [FromKeyedServices("proyectoRepository")] IRepository<Proyecto> proyectoRepository,
+            IMapper mapper,
             IHttpContextAccessor httpContextAccessor)
         {
+            _unitOfWork = unitOfWork;
             _proyectoRepository = proyectoRepository;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<IEnumerable<ProyectoDto>> GetAllAsync()
+        public async Task<IEnumerable<ProyectoDto>> GetAllAsync(bool? estado)
         {
             var usuarioDto = _httpContextAccessor.HttpContext?.Items["User"] as UsuarioDto;
+            var proyectos = await _proyectoRepository.GetAllAsync();
 
             if (usuarioDto != null)
             {
-                var proyectos = await _proyectoRepository.GetAllAsync();
-                return proyectos.Where(p => p.IdPersona == usuarioDto.Persona.Id).Select(p => _mapper.Map<ProyectoDto>(p));
+                if (estado.HasValue)
+                    return proyectos.Where(p => p.Estado == estado && p.IdPersona == usuarioDto.Persona.Id).Select(p => _mapper.Map<ProyectoDto>(p));
+
+                else
+                    return proyectos.Where(p => p.IdPersona == usuarioDto.Persona.Id).Select(p => _mapper.Map<ProyectoDto>(p));
             }
 
             return Enumerable.Empty<ProyectoDto>();
@@ -58,7 +65,7 @@ namespace productivity_hub_api.Service
             if (usuarioDto != null) proyecto.IdPersona = usuarioDto.Persona.Id;
 
             await _proyectoRepository.AddAsync(proyecto);
-            await _proyectoRepository.SaveAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             var proyectoDto = _mapper.Map<ProyectoDto>(proyecto);
             return proyectoDto;
@@ -71,10 +78,10 @@ namespace productivity_hub_api.Service
 
             if (proyecto != null && usuarioDto != null && proyecto.IdPersona == usuarioDto.Persona.Id)
             {
-                proyecto = _mapper.Map<UpdateProyectoDto, Proyecto>(updateProyectoDto, proyecto);
+                proyecto = _mapper.Map(updateProyectoDto, proyecto);
 
                 _proyectoRepository.Update(proyecto);
-                await _proyectoRepository.SaveAsync();
+                await _unitOfWork.SaveChangesAsync();
 
                 var proyectoDto = _mapper.Map<ProyectoDto>(proyecto);
 
@@ -94,12 +101,17 @@ namespace productivity_hub_api.Service
                 var proyectoDto = _mapper.Map<ProyectoDto>(proyecto);
 
                 _proyectoRepository.Delete(proyecto);
-                await _proyectoRepository.SaveAsync();
+                await _unitOfWork.SaveChangesAsync();
 
                 return proyectoDto;
             }
 
             return null;
+        }
+
+        public Task ChangeEstadoAsync(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

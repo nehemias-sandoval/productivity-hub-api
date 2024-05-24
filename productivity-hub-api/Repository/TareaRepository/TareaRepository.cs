@@ -2,7 +2,7 @@
 using productivity_hub_api.Models;
 using System.Security.AccessControl;
 
-namespace productivity_hub_api.Repository
+namespace productivity_hub_api.Repository.TareaRepository
 {
     public class TareaRepository : IRepository<Tarea>
     {
@@ -25,8 +25,6 @@ namespace productivity_hub_api.Repository
             _context.Tareas.Entry(tarea).State = EntityState.Modified;
         }
 
-        public void Delete(Tarea tarea) => _context.Tareas.Remove(tarea); 
-
-        public Task SaveAsync() => _context.SaveChangesAsync(); 
+        public void Delete(Tarea tarea) => _context.Tareas.Remove(tarea);
     }
 }

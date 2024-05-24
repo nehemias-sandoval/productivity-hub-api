@@ -1,4 +1,4 @@
-﻿namespace productivity_hub_api.Service
+﻿namespace productivity_hub_api.Service.AuthService
 {
     public interface IUsuarioService<TDto, TCreateDto, TUpdateDto, TAuthenticateReqDto, TAuthenticateResDto>
     {

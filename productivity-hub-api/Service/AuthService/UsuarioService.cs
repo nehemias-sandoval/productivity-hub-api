@@ -5,20 +5,27 @@ using productivity_hub_api.DTOs.Auth;
 using productivity_hub_api.DTOs.Proyecto;
 using productivity_hub_api.Models;
 using productivity_hub_api.Repository;
+using productivity_hub_api.Repository.AuthRepository;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace productivity_hub_api.Service
+namespace productivity_hub_api.Service.AuthService
 {
     public class UsuarioService : IUsuarioService<UsuarioDto, CreateUsuarioDto, UpdateUsuarioDto, AuthenticateReqDto, AuthenticateResDto>
     {
+        private IUnitOfWork _unitOfWork;
         private AppSettings _appSettings;
         private IUsuarioRepository _usuarioRepository;
         private IMapper _mapper;
 
-        public UsuarioService(IOptions<AppSettings> appSettings, IUsuarioRepository usuarioRepository, IMapper mapper)
+        public UsuarioService(
+            IUnitOfWork unitOfWork,
+            IOptions<AppSettings> appSettings,
+            IUsuarioRepository usuarioRepository,
+            IMapper mapper)
         {
+            _unitOfWork = unitOfWork;
             _appSettings = appSettings.Value;
             _usuarioRepository = usuarioRepository;
             _mapper = mapper;
@@ -27,7 +34,7 @@ namespace productivity_hub_api.Service
         public async Task<AuthenticateResDto?> Authenticate(AuthenticateReqDto authenticateReqDto)
         {
             var usuario = await _usuarioRepository.Validate(authenticateReqDto.Email, authenticateReqDto.Password);
-            
+
             if (usuario != null)
             {
                 var token = await generateJwtToken(usuario);
@@ -61,7 +68,7 @@ namespace productivity_hub_api.Service
             usuario.EncrypyPassword();
 
             await _usuarioRepository.AddAsync(usuario);
-            await _usuarioRepository.SaveAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             var usuarioDto = _mapper.Map<UsuarioDto>(usuario);
 

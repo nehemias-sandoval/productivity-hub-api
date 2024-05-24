@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using productivity_hub_api.DTOs.Subtarea;
 using productivity_hub_api.DTOs.Tarea;
 using productivity_hub_api.helpers;
-using productivity_hub_api.Service;
+using productivity_hub_api.Service.TareaService;
 
 namespace productivity_hub_api.Controllers
 {
@@ -47,6 +47,8 @@ namespace productivity_hub_api.Controllers
             }
 
             var subtareaDto = await _subtareaService.AddAsync(createSubtareaDto);
+            if (subtareaDto == null) return StatusCode(500);
+
             return CreatedAtAction(nameof(GetById), new { id = subtareaDto.Id }, subtareaDto);
         }
 
