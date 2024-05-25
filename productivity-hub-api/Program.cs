@@ -25,6 +25,8 @@ using productivity_hub_api.Service.AuthService;
 using productivity_hub_api.Service.EventoService;
 using productivity_hub_api.Service.ProyectoService;
 using productivity_hub_api.Service.TareaService;
+using productivity_hub_api.Service.CatalogoService;
+using productivity_hub_api.DTOs.Catalogo;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -115,6 +117,7 @@ builder.Services.AddKeyedScoped<IProyectoService<ProyectoDto, CreateProyectoDto,
 builder.Services.AddKeyedScoped<IEventoService<EventoDto, CreateEventoDto, UpdateEventoDto>, EventoService>("eventoService");
 builder.Services.AddKeyedScoped<ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto, ChangeEtiquetaTareaDto>, TareaService>("tareaService");
 builder.Services.AddKeyedScoped<ISubtareaService<SubtareaDto, CreateSubtareaDto, UpdateSubtareaDto>, SubtareaService>("subtareaService");
+builder.Services.AddKeyedScoped<ICatalogoService<EtiquetaDto, FrecuenciaDto, PrioridadDto, TipoEventoDto, TipoNotificacionDto>, CatalogoService>("catalogoService");
 
 // Entity Framework
 builder.Services.AddDbContext<StoreContext>(options =>

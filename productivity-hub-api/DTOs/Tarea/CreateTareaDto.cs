@@ -17,6 +17,6 @@ namespace productivity_hub_api.DTOs.Tarea
 
         public int IdPrioridad { get; set; }
 
-        public List<CreateSubtareaDto> Subtareas { get; set; }
+        public List<CreateSubtareaInTareaDto> Subtareas { get; set; }
     }
 }

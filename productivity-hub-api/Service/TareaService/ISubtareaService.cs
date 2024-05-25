@@ -5,7 +5,7 @@ namespace productivity_hub_api.Service.TareaService
 {
     public interface ISubtareaService<SubtareaDto, CreateSubtareaDto, UpdateSubtareaDto>
     {
-        Task<IEnumerable<SubtareaDto>> GetAllAsync(bool? pendientes);
+        Task<IEnumerable<SubtareaDto>> GetAllAsync(bool? pendientes, int idTarea);
 
         Task<SubtareaDto?> GetByIdAsync(int id);
 

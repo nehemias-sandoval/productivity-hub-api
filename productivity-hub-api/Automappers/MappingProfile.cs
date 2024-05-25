@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
 using productivity_hub_api.DTOs.Auth;
+using productivity_hub_api.DTOs.Catalogo;
 using productivity_hub_api.DTOs.Evento;
 using productivity_hub_api.DTOs.Persona;
-using productivity_hub_api.DTOs.Prioridad;
 using productivity_hub_api.DTOs.Proyecto;
 using productivity_hub_api.DTOs.Subtarea;
 using productivity_hub_api.DTOs.Tarea;
-using productivity_hub_api.DTOs.TipoEvento;
 using productivity_hub_api.Models;
 
 namespace productivity_hub_api.Automappers
@@ -21,6 +20,12 @@ namespace productivity_hub_api.Automappers
             CreateMap<Usuario, AuthenticateResDto>().ReverseMap();
 
             // Catalogos
+            CreateMap<Etiqueta, EtiquetaDto>().ReverseMap();
+            CreateMap<Frecuencia, FrecuenciaDto>().ReverseMap();
+            CreateMap<Prioridad,  PrioridadDto>().ReverseMap(); 
+            CreateMap<TipoEvento, TipoEventoDto>().ReverseMap();
+            CreateMap<TipoNotificacion, TipoNotificacionDto>().ReverseMap();
+
 
             // Persona
             CreateMap<CreatePersonaDto, Persona>().ReverseMap();
@@ -36,20 +41,15 @@ namespace productivity_hub_api.Automappers
             CreateMap<Evento, EventoDto>().ReverseMap();
             CreateMap<UpdateEventoDto, Evento>().ReverseMap();
 
-            // Tipo Evento
-            CreateMap<TipoEvento, TipoEventoDto>().ReverseMap();
-
             //Tarea
             CreateMap<CreateTareaDto, Tarea>();
             CreateMap<Tarea, TareaDto>().ReverseMap();
+            CreateMap<CreateSubtareaInTareaDto, Subtarea>();
             CreateMap<UpdateTareaDto, Tarea>();
 
             //Subtarea
             CreateMap<CreateSubtareaDto, Subtarea>();
             CreateMap<Subtarea, SubtareaDto>().ReverseMap();
-
-            // Prioridad
-            CreateMap<Prioridad, PrioridadDto>().ReverseMap();
         }
     }
 }

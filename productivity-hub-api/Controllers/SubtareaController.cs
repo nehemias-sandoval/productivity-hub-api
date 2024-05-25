@@ -26,8 +26,8 @@ namespace productivity_hub_api.Controllers
             _subtareaService = subtareaService;
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<SubtareaDto>> Get([FromQuery] bool? pendientes) => await _subtareaService.GetAllAsync(pendientes);
+        [HttpGet("tarea/{id}")]
+        public async Task<IEnumerable<SubtareaDto>> Get([FromQuery] bool? pendientes, int id) => await _subtareaService.GetAllAsync(pendientes, id);
 
         [HttpGet("{id}")]
         public async Task<ActionResult<SubtareaDto>> GetById(int id)

@@ -21,14 +21,14 @@ namespace productivity_hub_api.Service.TareaService
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<SubtareaDto>> GetAllAsync(bool? pendientes)
+        public async Task<IEnumerable<SubtareaDto>> GetAllAsync(bool? pendientes, int idTarea)
         {
             var subtareas = await _repositorySubtarea.GetAllAsync();
 
             if (pendientes.HasValue)
-                return subtareas.Where(st => st.Estado == pendientes.Value).Select(st => _mapper.Map<SubtareaDto>(st));
+                return subtareas.Where(st => st.Estado == pendientes.Value && st.IdTarea == idTarea).Select(st => _mapper.Map<SubtareaDto>(st));
 
-            return subtareas.Select(s => _mapper.Map<SubtareaDto>(s));
+            return subtareas.Where(st => st.IdTarea == idTarea).Select(st => _mapper.Map<SubtareaDto>(st));
         }
 
         public async Task<SubtareaDto?> GetByIdAsync(int id)
