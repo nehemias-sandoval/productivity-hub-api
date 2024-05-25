@@ -13,9 +13,6 @@ namespace productivity_hub_api.Models
                .Property(u => u.Google).HasDefaultValue(false);
 
             modelBuilder.Entity<Tarea>()
-                .Property(t => t.Estado).HasDefaultValue(false);
-
-            modelBuilder.Entity<Tarea>()
                 .Property(t => t.IdEtiqueta).HasDefaultValue(1); // Pendiente
 
             modelBuilder.Entity<Subtarea>()

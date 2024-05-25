@@ -43,7 +43,7 @@ namespace productivity_hub_api.Controllers
 
 
         [HttpGet]
-        public async Task<IEnumerable<TareaDto>> Get([FromQuery] bool? pendientes) => await _tareaService.GetAllAsync(pendientes);
+        public async Task<IEnumerable<TareaDto>> Get([FromQuery] int? idEtiqueta) => await _tareaService.GetAllAsync(idEtiqueta);
 
         [HttpGet("{id}")]
         public async Task<ActionResult<TareaDto>> GetById(int id)

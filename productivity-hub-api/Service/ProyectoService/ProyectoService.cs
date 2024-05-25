@@ -57,7 +57,7 @@ namespace productivity_hub_api.Service.ProyectoService
             return null;
         }
 
-        public async Task<ProyectoDto> AddAsync(CreateProyectoDto createProyectoDto)
+        public async Task<ProyectoDto?> AddAsync(CreateProyectoDto createProyectoDto)
         {
             var usuarioDto = _httpContextAccessor.HttpContext?.Items["User"] as UsuarioDto;
             var proyecto = _mapper.Map<Proyecto>(createProyectoDto);
@@ -109,9 +109,26 @@ namespace productivity_hub_api.Service.ProyectoService
             return null;
         }
 
-        public Task ChangeEstadoAsync(int id)
+        public async Task ChangeEstadoAsync(int id)
         {
-            throw new NotImplementedException();
+            var proyecto = await _proyectoRepository.GetByIdAsync(id);
+            if (proyecto != null)
+            {
+                var tareasPendientes = proyecto.ProyectoTareas.Select(p => p.Tarea).Where(p => p.IdEtiqueta != 3);
+                if (tareasPendientes.Count() == 0)
+                {
+                    if (proyecto.Estado) return;
+                    proyecto.Estado = true;
+                }
+                else
+                {
+                    if (!proyecto.Estado) return;
+                    proyecto.Estado = false;
+                }                 
+
+                _proyectoRepository.Update(proyecto);
+                await _unitOfWork.SaveChangesAsync();
+            }
         }
     }
 }

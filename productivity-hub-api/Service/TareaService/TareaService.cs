@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using productivity_hub_api.DTOs.Auth;
+using productivity_hub_api.DTOs.Proyecto;
 using productivity_hub_api.DTOs.Tarea;
 using productivity_hub_api.Models;
 using productivity_hub_api.Repository;
 using productivity_hub_api.Repository.CatalogoRepository;
 using productivity_hub_api.Repository.EventoRepository;
 using productivity_hub_api.Repository.ProyectoRepository;
+using productivity_hub_api.Service.ProyectoService;
 
 namespace productivity_hub_api.Service.TareaService
 {
@@ -20,6 +22,7 @@ namespace productivity_hub_api.Service.TareaService
         private CatalogoRepository _catalogoRepository;
         private IMapper _mapper;
         private IHttpContextAccessor _httpContextAccessor;
+        private IProyectoService<ProyectoDto, CreateProyectoDto, UpdateProyectoDto> _proyectoService;
 
         public TareaService(
             IUnitOfWork unitOfWork,
@@ -30,7 +33,8 @@ namespace productivity_hub_api.Service.TareaService
             EventoTareaRepository eventoTareaRepository,
             CatalogoRepository catalogoRepository,
             IMapper mapper,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            [FromKeyedServices("proyectoService")] IProyectoService<ProyectoDto, CreateProyectoDto, UpdateProyectoDto> proyectoService)
         {
             _unitOfWork = unitOfWork;
             _tareaRepository = tareaRepository;
@@ -41,9 +45,10 @@ namespace productivity_hub_api.Service.TareaService
             _eventoTareaRepository = eventoTareaRepository;
             _catalogoRepository = catalogoRepository;
             _httpContextAccessor = httpContextAccessor;
+            _proyectoService = proyectoService;
         }
 
-        public async Task<IEnumerable<TareaDto>> GetAllAsync(bool? pendientes)
+        public async Task<IEnumerable<TareaDto>> GetAllAsync(int? idEtiqueta)
         {
             var usuarioDto = _httpContextAccessor.HttpContext?.Items["User"] as UsuarioDto;
 
@@ -51,8 +56,8 @@ namespace productivity_hub_api.Service.TareaService
 
             if (usuarioDto != null)
             {
-                if (pendientes.HasValue)
-                    return tareas.Where(t => t.Estado == pendientes.Value && t.IdPersona == usuarioDto.Persona.Id).Select(t => _mapper.Map<TareaDto>(t));
+                if (idEtiqueta.HasValue)
+                    return tareas.Where(t => t.IdEtiqueta == idEtiqueta && t.IdPersona == usuarioDto.Persona.Id).Select(t => _mapper.Map<TareaDto>(t));
                 else
                     return tareas.Where(t => t.IdPersona == usuarioDto.Persona.Id).Select(t => _mapper.Map<TareaDto>(t));
             }
@@ -121,6 +126,7 @@ namespace productivity_hub_api.Service.TareaService
                     }
                 }
 
+                await _proyectoService.ChangeEstadoAsync(tarea.ProyectoTareas.Select(pt => pt.Proyecto).First().Id);
                 await _unitOfWork.SaveChangesAsync();
                 await _unitOfWork.CommitAsync();
 
@@ -194,9 +200,27 @@ namespace productivity_hub_api.Service.TareaService
             return null;
         }
 
-        public Task ChangeEstadoAsync(int id)
+        public async Task CompletarWhenSubtareasAreCompletadasAsync(int id)
         {
-            throw new NotImplementedException();
+            var tarea = await _tareaRepository.GetByIdAsync(id);
+            if (tarea != null)
+            {
+                var subtareasPendientes = tarea.Subtareas.Where(st => !st.Estado);
+
+                if (subtareasPendientes.Count() == 0)
+                {
+                    if (tarea.IdEtiqueta == 3) return;
+                    tarea.IdEtiqueta = 3;
+                }
+                else
+                {
+                    if (tarea.IdEtiqueta != 3) return;
+                    tarea.IdEtiqueta = 2;
+                }
+
+                _tareaRepository.Update(tarea);
+                await _unitOfWork.SaveChangesAsync();
+            }   
         }
     }
 }

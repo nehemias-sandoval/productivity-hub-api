@@ -242,7 +242,6 @@ namespace productivity_hub_api.Migrations
                     Titulo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FechaLimite = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Estado = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     IdPersona = table.Column<int>(type: "int", nullable: false),
                     IdPrioridad = table.Column<int>(type: "int", nullable: false),
                     IdEtiqueta = table.Column<int>(type: "int", nullable: false, defaultValue: 1)

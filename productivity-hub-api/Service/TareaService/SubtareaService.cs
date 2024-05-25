@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
+using productivity_hub_api.DTOs.Proyecto;
 using productivity_hub_api.DTOs.Subtarea;
+using productivity_hub_api.DTOs.Tarea;
 using productivity_hub_api.Models;
 using productivity_hub_api.Repository;
+using productivity_hub_api.Service.ProyectoService;
 
 namespace productivity_hub_api.Service.TareaService
 {
@@ -10,15 +13,21 @@ namespace productivity_hub_api.Service.TareaService
         private IUnitOfWork _unitOfWork;
         private IRepository<Subtarea> _repositorySubtarea;
         private IMapper _mapper;
+        private ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto, ChangeEtiquetaTareaDto> _tareaService;
+        private IProyectoService<ProyectoDto, CreateProyectoDto, UpdateProyectoDto> _proyectoService;
 
         public SubtareaService(
             IUnitOfWork unitOfWork,
             [FromKeyedServices("subtareaRepository")] IRepository<Subtarea> repositorySubtarea,
-            IMapper mapper)
+            IMapper mapper,
+            [FromKeyedServices("tareaService")] ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto, ChangeEtiquetaTareaDto> tareaService,
+            [FromKeyedServices("proyectoService")] IProyectoService<ProyectoDto, CreateProyectoDto, UpdateProyectoDto> proyectoService)
         {
             _unitOfWork = unitOfWork;
             _repositorySubtarea = repositorySubtarea;
             _mapper = mapper;
+            _tareaService = tareaService;
+            _proyectoService = proyectoService;
         }
 
         public async Task<IEnumerable<SubtareaDto>> GetAllAsync(bool? pendientes)
@@ -52,6 +61,9 @@ namespace productivity_hub_api.Service.TareaService
             await _unitOfWork.SaveChangesAsync();
 
             var subtareaDto = _mapper.Map<SubtareaDto>(subtarea);
+
+            await _tareaService.CompletarWhenSubtareasAreCompletadasAsync(subtarea.IdTarea);
+            await _proyectoService.ChangeEstadoAsync(subtarea.Tarea.ProyectoTareas.Select(pt => pt.Proyecto).First().Id);
 
             return subtareaDto;
         }
@@ -105,6 +117,9 @@ namespace productivity_hub_api.Service.TareaService
                 await _unitOfWork.SaveChangesAsync();
 
                 var subtareaDto = _mapper.Map<SubtareaDto>(subtarea);
+
+                await _tareaService.CompletarWhenSubtareasAreCompletadasAsync(subtarea.IdTarea);
+                await _proyectoService.ChangeEstadoAsync(subtarea.Tarea.ProyectoTareas.Select(pt => pt.Proyecto).First().Id);
 
                 return subtareaDto;
             }

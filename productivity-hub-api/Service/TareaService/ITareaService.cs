@@ -4,7 +4,7 @@ namespace productivity_hub_api.Service.TareaService
 {
     public interface ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto, ChangeEtiquetaTareaDto>
     {
-        Task<IEnumerable<TareaDto>> GetAllAsync(bool? pendientes);
+        Task<IEnumerable<TareaDto>> GetAllAsync(int? idEtiqueta);
 
         Task<TareaDto?> GetByIdAsync(int id);
 
@@ -16,6 +16,6 @@ namespace productivity_hub_api.Service.TareaService
 
         Task<TareaDto?> ChangeEtiquetaAsync(int id, ChangeEtiquetaTareaDto changeDto);
 
-        Task ChangeEstadoAsync(int id);
+        Task CompletarWhenSubtareasAreCompletadasAsync(int id);
     }
 }

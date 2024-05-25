@@ -12,7 +12,7 @@ using productivity_hub_api.Models;
 namespace productivity_hub_api.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20240524061444_Initial")]
+    [Migration("20240525235008_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -376,11 +376,6 @@ namespace productivity_hub_api.Migrations
                     b.Property<string>("Descripcion")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Estado")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
 
                     b.Property<DateTime>("FechaLimite")
                         .HasColumnType("datetime2");
