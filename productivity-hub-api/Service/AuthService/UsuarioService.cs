@@ -99,5 +99,6 @@ namespace productivity_hub_api.Service.AuthService
 
             return tokenHandler.WriteToken(token);
         }
+
     }
 }

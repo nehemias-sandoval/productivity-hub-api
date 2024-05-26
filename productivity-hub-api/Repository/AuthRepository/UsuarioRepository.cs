@@ -34,5 +34,10 @@ namespace productivity_hub_api.Repository.AuthRepository
             _context.Attach(usuario);
             _context.Usuarios.Entry(usuario).State = EntityState.Modified;
         }
+
+        public async Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken)
+        {
+            return await _context.Usuarios.AnyAsync(u => u.Email == email, cancellationToken);
+        }
     }
 }

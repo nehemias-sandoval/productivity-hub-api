@@ -11,5 +11,7 @@ namespace productivity_hub_api.Repository.AuthRepository
         Task AddAsync(Usuario usuario);
 
         void Update(Usuario usuario);
+
+        Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken);
     }
 }
