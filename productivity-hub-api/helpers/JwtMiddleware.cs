@@ -6,7 +6,7 @@ using productivity_hub_api.Service.AuthService;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
-namespace productivity_hub_api.helpers
+namespace productivity_hub_api.Helpers
 {
     public class JwtMiddleware
     {

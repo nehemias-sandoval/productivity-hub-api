@@ -44,5 +44,7 @@ namespace productivity_hub_api.Repository.TareaRepository
         }
 
         public void Delete(Subtarea subtarea) => _context.Subtareas.Remove(subtarea);
+
+        public async Task SaveAsync() => await _context.SaveChangesAsync();
     }
 }

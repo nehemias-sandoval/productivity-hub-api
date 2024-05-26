@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using productivity_hub_api.DTOs.Auth;
-using productivity_hub_api.helpers;
+using productivity_hub_api.Helpers;
 using productivity_hub_api.Service.AuthService;
 
 namespace productivity_hub_api.Controllers

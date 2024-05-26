@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using productivity_hub_api.DTOs.Auth;
 
-namespace productivity_hub_api.helpers
+namespace productivity_hub_api.Helpers
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class AuthorizeAttribute : Attribute, IAuthorizationFilter

@@ -26,5 +26,7 @@ namespace productivity_hub_api.Repository.TareaRepository
         }
 
         public void Delete(Tarea tarea) => _context.Tareas.Remove(tarea);
+
+        public async Task SaveAsync() => await _context.SaveChangesAsync();
     }
 }

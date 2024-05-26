@@ -21,12 +21,36 @@ namespace productivity_hub_api.Repository
 
         public async Task CommitAsync()
         {
-            if (_transaction != null) await _transaction.CommitAsync();
+            try
+            {
+                if (_transaction != null)
+                {
+                    await _transaction.CommitAsync();
+                    _transaction.Dispose();
+                }
+            }
+            catch (Exception)
+            {
+                await RollbackAsync();
+                throw;
+            }
         }
 
         public async Task RollbackAsync()
         {
-            if (_transaction != null) await _transaction.RollbackAsync();
+            try
+            {
+                if (_transaction != null)
+                {
+                    await _transaction.RollbackAsync();
+                    _transaction.Dispose();
+                }
+            }
+            catch (Exception)
+            {
+                await RollbackAsync();
+                throw;
+            }        
         }
 
         public async Task SaveChangesAsync()

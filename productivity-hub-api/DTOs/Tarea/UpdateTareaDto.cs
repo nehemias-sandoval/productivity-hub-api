@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace productivity_hub_api.DTOs.Tarea
+﻿namespace productivity_hub_api.DTOs.Tarea
 {
     public class UpdateTareaDto
     {

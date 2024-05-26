@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using productivity_hub_api.DTOs.Auth;
 using productivity_hub_api.DTOs.Tarea;
-using productivity_hub_api.helpers;
+using productivity_hub_api.Helpers;
 using productivity_hub_api.Models;
 using productivity_hub_api.Repository;
 using productivity_hub_api.Repository.CatalogoRepository;
@@ -63,24 +63,25 @@ namespace productivity_hub_api.Controllers
                 return BadRequest(validationResult.Errors);
             }
 
-            if (createTareaDto.IsProyecto)
+            if (createTareaDto.IdProyecto.HasValue)
             {
-                var proyecto = await _proyectoRepository.GetByIdAsync(createTareaDto.IdProyectoOrEvento);
+                var proyecto = await _proyectoRepository.GetByIdAsync(createTareaDto.IdProyecto.Value);
                 if (proyecto == null) return NotFound(new { message = "Proyecto no encontrado" });
 
                 if (usuarioDto != null)
                     if (proyecto.IdPersona != usuarioDto.Persona.Id) return Unauthorized(new { message = "El Proyecto no le pertenece" });
             }
-            else
+
+            if (createTareaDto.IdEvento.HasValue)
             {
-                var evento = await _eventoRepository.GetByIdAsync(createTareaDto.IdProyectoOrEvento);
+                var evento = await _eventoRepository.GetByIdAsync(createTareaDto.IdEvento.Value);
                 if (evento == null) return NotFound(new { message = "Evento no encontrado" });
 
                 if (usuarioDto != null)
                     if (evento.IdPersona != usuarioDto.Persona.Id) return Unauthorized(new { message = "El Evento no le pertenece" });
             }
 
-            var prioridad = _catalogoRepository.GetPrioridadByIdAsync(createTareaDto.IdPrioridad);
+            var prioridad = await _catalogoRepository.GetPrioridadByIdAsync(createTareaDto.IdPrioridad);
             if (prioridad == null) return NotFound(new { message = "Prioridad no encontrada" });
 
             var tareaDto = await _tareaService.AddAsync(createTareaDto);

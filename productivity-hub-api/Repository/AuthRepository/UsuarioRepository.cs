@@ -39,5 +39,7 @@ namespace productivity_hub_api.Repository.AuthRepository
         {
             return await _context.Usuarios.AnyAsync(u => u.Email == email, cancellationToken);
         }
+
+        public async Task SaveAsync() => await _context.SaveChangesAsync();
     }
 }

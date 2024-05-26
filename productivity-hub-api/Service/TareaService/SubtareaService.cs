@@ -10,20 +10,17 @@ namespace productivity_hub_api.Service.TareaService
 {
     public class SubtareaService : ISubtareaService<SubtareaDto, CreateSubtareaDto, UpdateSubtareaDto>
     {
-        private IUnitOfWork _unitOfWork;
         private IRepository<Subtarea> _repositorySubtarea;
         private IMapper _mapper;
         private ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto, ChangeEtiquetaTareaDto> _tareaService;
         private IProyectoService<ProyectoDto, CreateProyectoDto, UpdateProyectoDto> _proyectoService;
 
         public SubtareaService(
-            IUnitOfWork unitOfWork,
             [FromKeyedServices("subtareaRepository")] IRepository<Subtarea> repositorySubtarea,
             IMapper mapper,
             [FromKeyedServices("tareaService")] ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto, ChangeEtiquetaTareaDto> tareaService,
             [FromKeyedServices("proyectoService")] IProyectoService<ProyectoDto, CreateProyectoDto, UpdateProyectoDto> proyectoService)
         {
-            _unitOfWork = unitOfWork;
             _repositorySubtarea = repositorySubtarea;
             _mapper = mapper;
             _tareaService = tareaService;
@@ -58,12 +55,15 @@ namespace productivity_hub_api.Service.TareaService
         {
             var subtarea = _mapper.Map<Subtarea>(createSubtareaDto);
             await _repositorySubtarea.AddAsync(subtarea);
-            await _unitOfWork.SaveChangesAsync();
+            await _repositorySubtarea.SaveAsync();
 
             var subtareaDto = _mapper.Map<SubtareaDto>(subtarea);
 
             await _tareaService.CompletarWhenSubtareasAreCompletadasAsync(subtarea.IdTarea);
-            await _proyectoService.ChangeEstadoAsync(subtarea.Tarea.ProyectoTareas.Select(pt => pt.Proyecto).First().Id);
+
+            var subtareaById = await _repositorySubtarea.GetByIdAsync(subtarea.IdTarea);
+            if (subtareaById != null)
+                await _proyectoService.ChangeEstadoAsync(subtareaById.Tarea.ProyectoTareas.Select(pt => pt.Proyecto).First().Id);
 
             return subtareaDto;
         }
@@ -77,7 +77,7 @@ namespace productivity_hub_api.Service.TareaService
                 subtarea = _mapper.Map(updateSubtareaDto, subtarea);
 
                 _repositorySubtarea.Update(subtarea);
-                await _unitOfWork.SaveChangesAsync();
+                await _repositorySubtarea.SaveAsync();
 
                 var subtareaDto = _mapper.Map<SubtareaDto>(subtarea);
 
@@ -96,7 +96,7 @@ namespace productivity_hub_api.Service.TareaService
                 var subtaraDto = _mapper.Map<SubtareaDto>(subtarea);
 
                 _repositorySubtarea.Delete(subtarea);
-                await _unitOfWork.SaveChangesAsync();
+                await _repositorySubtarea.SaveAsync();
 
                 return subtaraDto;
             }
@@ -114,7 +114,7 @@ namespace productivity_hub_api.Service.TareaService
                 subtarea.Estado = subtarea.Estado ? false : true;
 
                 _repositorySubtarea.Update(subtarea);
-                await _unitOfWork.SaveChangesAsync();
+                await _repositorySubtarea.SaveAsync();
 
                 var subtareaDto = _mapper.Map<SubtareaDto>(subtarea);
 

@@ -1,8 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using productivity_hub_api.DTOs.Proyecto;
-using productivity_hub_api.DTOs.Tarea;
-using productivity_hub_api.helpers;
+using productivity_hub_api.Helpers;
 using productivity_hub_api.Service.ProyectoService;
 
 namespace productivity_hub_api.Controllers

@@ -25,5 +25,7 @@ namespace productivity_hub_api.Repository.ProyectoRepository
         }
 
         public void Delete(Proyecto proyecto) => _context.Proyectos.Remove(proyecto);
+
+        public async Task SaveAsync() => await _context.SaveChangesAsync();
     }
 }

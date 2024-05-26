@@ -4,7 +4,7 @@ using Microsoft.OpenApi.Models;
 using productivity_hub_api.Automappers;
 using productivity_hub_api.DTOs.Auth;
 using productivity_hub_api.DTOs.Proyecto;
-using productivity_hub_api.helpers;
+using productivity_hub_api.Helpers;
 using productivity_hub_api.DTOs.Subtarea;
 using productivity_hub_api.DTOs.Tarea;
 using productivity_hub_api.Models;
@@ -93,9 +93,6 @@ builder.Services.AddScoped<IValidator<UpdateSubtareaDto>,  UpdateSubtareaValidat
 
 // Mappers
 builder.Services.AddAutoMapper(typeof(MappingProfile));
-
-// UnitOfWork 
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // Repository
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();

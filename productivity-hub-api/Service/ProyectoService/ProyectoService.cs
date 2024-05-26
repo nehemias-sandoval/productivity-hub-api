@@ -8,18 +8,15 @@ namespace productivity_hub_api.Service.ProyectoService
 {
     public class ProyectoService : IProyectoService<ProyectoDto, CreateProyectoDto, UpdateProyectoDto>
     {
-        private IUnitOfWork _unitOfWork;
         private IRepository<Proyecto> _proyectoRepository;
         private IMapper _mapper;
         private IHttpContextAccessor _httpContextAccessor;
 
         public ProyectoService(
-            IUnitOfWork unitOfWork,
             [FromKeyedServices("proyectoRepository")] IRepository<Proyecto> proyectoRepository,
             IMapper mapper,
             IHttpContextAccessor httpContextAccessor)
         {
-            _unitOfWork = unitOfWork;
             _proyectoRepository = proyectoRepository;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
@@ -65,7 +62,7 @@ namespace productivity_hub_api.Service.ProyectoService
             if (usuarioDto != null) proyecto.IdPersona = usuarioDto.Persona.Id;
 
             await _proyectoRepository.AddAsync(proyecto);
-            await _unitOfWork.SaveChangesAsync();
+            await _proyectoRepository.SaveAsync();
 
             var proyectoDto = _mapper.Map<ProyectoDto>(proyecto);
             return proyectoDto;
@@ -81,7 +78,7 @@ namespace productivity_hub_api.Service.ProyectoService
                 proyecto = _mapper.Map(updateProyectoDto, proyecto);
 
                 _proyectoRepository.Update(proyecto);
-                await _unitOfWork.SaveChangesAsync();
+                await _proyectoRepository.SaveAsync();
 
                 var proyectoDto = _mapper.Map<ProyectoDto>(proyecto);
 
@@ -101,7 +98,7 @@ namespace productivity_hub_api.Service.ProyectoService
                 var proyectoDto = _mapper.Map<ProyectoDto>(proyecto);
 
                 _proyectoRepository.Delete(proyecto);
-                await _unitOfWork.SaveChangesAsync();
+                await _proyectoRepository.SaveAsync();
 
                 return proyectoDto;
             }
@@ -127,7 +124,7 @@ namespace productivity_hub_api.Service.ProyectoService
                 }                 
 
                 _proyectoRepository.Update(proyecto);
-                await _unitOfWork.SaveChangesAsync();
+                await _proyectoRepository.SaveAsync();
             }
         }
     }

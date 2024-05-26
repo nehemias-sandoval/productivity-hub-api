@@ -25,5 +25,7 @@ namespace productivity_hub_api.Repository.EventoRepository
         }
 
         public void Delete(Evento evento) => _context.Eventos.Remove(evento);
+
+        public async Task SaveAsync() => await _context.SaveChangesAsync();
     }
 }

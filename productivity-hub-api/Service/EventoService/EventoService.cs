@@ -8,18 +8,15 @@ namespace productivity_hub_api.Service.EventoService
 {
     public class EventoService : IEventoService<EventoDto, CreateEventoDto, UpdateEventoDto>
     {
-        private IUnitOfWork _unitOfWork;
         private IRepository<Evento> _eventoRepository;
         private IMapper _mapper;
         private IHttpContextAccessor _httpContextAccessor;
 
         public EventoService(
-            IUnitOfWork unitOfWork,
             [FromKeyedServices("eventoRepository")] IRepository<Evento> eventoRepository,
             IMapper mapper,
             IHttpContextAccessor httpContextAccessor)
         {
-            _unitOfWork = unitOfWork;
             _eventoRepository = eventoRepository;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
@@ -72,7 +69,7 @@ namespace productivity_hub_api.Service.EventoService
             if (usuarioDto != null) evento.IdPersona = usuarioDto.Persona.Id;
 
             await _eventoRepository.AddAsync(evento);
-            await _unitOfWork.SaveChangesAsync();
+            await _eventoRepository.SaveAsync();
 
             var eventoDto = _mapper.Map<EventoDto>(evento);
             return eventoDto;
@@ -88,7 +85,7 @@ namespace productivity_hub_api.Service.EventoService
                 evento = _mapper.Map(updateEventoDto, evento);
 
                 _eventoRepository.Update(evento);
-                await _unitOfWork.SaveChangesAsync();
+                await _eventoRepository.SaveAsync();
 
                 var eventoDto = _mapper.Map<EventoDto>(evento);
 
@@ -108,7 +105,7 @@ namespace productivity_hub_api.Service.EventoService
                 var eventoDto = _mapper.Map<EventoDto>(evento);
 
                 _eventoRepository.Delete(evento);
-                await _unitOfWork.SaveChangesAsync();
+                await _eventoRepository.SaveAsync();
 
                 return eventoDto;
             }

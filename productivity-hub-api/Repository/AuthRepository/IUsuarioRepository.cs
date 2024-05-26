@@ -13,5 +13,7 @@ namespace productivity_hub_api.Repository.AuthRepository
         void Update(Usuario usuario);
 
         Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken);
+
+        Task SaveAsync();
     }
 }

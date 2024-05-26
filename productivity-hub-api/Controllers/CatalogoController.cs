@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using productivity_hub_api.DTOs.Catalogo;
-using productivity_hub_api.helpers;
-using productivity_hub_api.Models;
-using productivity_hub_api.Repository.CatalogoRepository;
+using productivity_hub_api.Helpers;
 using productivity_hub_api.Service.CatalogoService;
 
 namespace productivity_hub_api.Controllers
 {
-    [Route("api/catalogos")]
+    [Route("api/v1/catalogos")]
     [ApiController]
     [Authorize]
     public class CatalogoController : ControllerBase

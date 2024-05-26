@@ -1,14 +1,14 @@
 ﻿using FluentValidation;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using productivity_hub_api.DTOs.Evento;
-using productivity_hub_api.DTOs.Tarea;
+using productivity_hub_api.Helpers;
 using productivity_hub_api.Service.EventoService;
 
 namespace productivity_hub_api.Controllers
 {
-    [Route("api/evento")]
+    [Route("api/v1/evento")]
     [ApiController]
+    [Authorize]
     public class EventoController : ControllerBase
     {
         private IValidator<CreateEventoDto> _createEventoValidator;

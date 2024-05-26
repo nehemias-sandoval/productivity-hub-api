@@ -1,7 +1,5 @@
 ﻿using productivity_hub_api.DTOs.Catalogo;
-using productivity_hub_api.DTOs.Persona;
 using productivity_hub_api.DTOs.Subtarea;
-using System.ComponentModel.DataAnnotations;
 
 namespace productivity_hub_api.DTOs.Tarea
 {
