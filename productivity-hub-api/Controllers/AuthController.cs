@@ -58,9 +58,9 @@ namespace productivity_hub_api.Controllers
         }
 
         [HttpPost("usuario")]
-        public async Task<ActionResult<UsuarioDto>> Add(CreateUsuarioDto createUsuarioDto)
+        public async Task<ActionResult<UsuarioDto>> Add(CreateUsuarioDto createUsuarioDto, CancellationToken cancellationToken)
         {
-            var validationResult = await _createUsuarioValidator.ValidateAsync(createUsuarioDto);
+            var validationResult = await _createUsuarioValidator.ValidateAsync(createUsuarioDto, cancellationToken);
 
             if (!validationResult.IsValid)
             {
