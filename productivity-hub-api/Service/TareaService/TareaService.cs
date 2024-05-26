@@ -9,6 +9,7 @@ using productivity_hub_api.Repository.EventoRepository;
 using productivity_hub_api.Repository.ProyectoRepository;
 using productivity_hub_api.Service.ProyectoService;
 using System.Transactions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace productivity_hub_api.Service.TareaService
 {
@@ -46,21 +47,36 @@ namespace productivity_hub_api.Service.TareaService
             _proyectoService = proyectoService;
         }
 
-        public async Task<IEnumerable<TareaDto>> GetAllAsync(int? idEtiqueta)
+        public async Task<IEnumerable<TareaDto>> GetAllAsync(int? idEtiqueta, int? idProyectoOrEvento, bool? isProyecto, DateTime? fecha)
         {
             var usuarioDto = _httpContextAccessor.HttpContext?.Items["User"] as UsuarioDto;
+            if (usuarioDto == null) return Enumerable.Empty<TareaDto>();
 
-            var tareas = await _tareaRepository.GetAllAsync();
+            var tareasQuery = _tareaRepository.GetAllAsync()
+                .ContinueWith(task => task.Result.Where(t => t.IdPersona == usuarioDto.Persona.Id));
 
-            if (usuarioDto != null)
+            if (idEtiqueta.HasValue)
+                tareasQuery = tareasQuery.ContinueWith(task => task.Result.Where(t => t.IdEtiqueta == idEtiqueta.Value));
+
+            if (idProyectoOrEvento.HasValue)
             {
-                if (idEtiqueta.HasValue)
-                    return tareas.Where(t => t.IdEtiqueta == idEtiqueta && t.IdPersona == usuarioDto.Persona.Id).Select(t => _mapper.Map<TareaDto>(t));
+                if (isProyecto.HasValue && isProyecto.Value)
+                {
+                    tareasQuery = tareasQuery.ContinueWith(task => task.Result.Where(t => t.ProyectoTareas.Any(pt => pt.IdProyecto == idProyectoOrEvento.Value)));
+                }
                 else
-                    return tareas.Where(t => t.IdPersona == usuarioDto.Persona.Id).Select(t => _mapper.Map<TareaDto>(t));
+                {
+                    tareasQuery = tareasQuery.ContinueWith(task => task.Result.Where(t => t.EventoTareas.Any(et => et.IdEvento == idProyectoOrEvento.Value)));
+                }
             }
 
-            return Enumerable.Empty<TareaDto>();
+            if (fecha.HasValue)
+            {
+                tareasQuery = tareasQuery.ContinueWith(task => task.Result.Where(t => t.FechaLimite == fecha.Value));
+            }
+
+            var tareas = await tareasQuery;
+            return tareas.Select(t => _mapper.Map<TareaDto>(t));
         }
 
         public async Task<TareaDto?> GetByIdAsync(int id)

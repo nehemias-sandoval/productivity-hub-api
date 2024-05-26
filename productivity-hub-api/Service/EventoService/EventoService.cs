@@ -32,10 +32,10 @@ namespace productivity_hub_api.Service.EventoService
                 if (vencido.HasValue)
                 {
                     if (vencido.Value)
-                        return eventos.Where(e => e.Fecha > DateTime.Now && e.IdPersona == usuarioDto.Persona.Id).Select(e => _mapper.Map<EventoDto>(e));
+                        return eventos.Where(e => e.Fecha < DateTime.Now && e.IdPersona == usuarioDto.Persona.Id).Select(e => _mapper.Map<EventoDto>(e));
 
                     else
-                        return eventos.Where(e => e.Fecha <= DateTime.Now && e.IdPersona == usuarioDto.Persona.Id).Select(e => _mapper.Map<EventoDto>(e));
+                        return eventos.Where(e => e.Fecha > DateTime.Now && e.IdPersona == usuarioDto.Persona.Id).Select(e => _mapper.Map<EventoDto>(e));
                 }
                 else
                 {

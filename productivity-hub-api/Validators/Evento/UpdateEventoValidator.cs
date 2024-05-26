@@ -10,7 +10,9 @@ namespace productivity_hub_api.Validators.Proyecto
         {
             RuleFor(x => x.Titulo).NotEmpty().WithMessage("El {PropertyName} es requerido");
             RuleFor(x => x.Descripcion).NotEmpty().WithMessage("El {PropertyName} es requerido");
-            RuleFor(x => x.Fecha).NotEmpty().WithMessage("El {PropertyName} es requerido");
+            RuleFor(x => x.Fecha)
+                .NotEmpty().WithMessage("El {PropertyName} es requerido")
+                .GreaterThan(DateTime.Today).WithMessage("La {PropertyName} debe ser mayor al día actual");
             RuleFor(x => x.IdTipoEvento).NotNull().WithMessage("El {PropertyName} es requerido");
         }
     }

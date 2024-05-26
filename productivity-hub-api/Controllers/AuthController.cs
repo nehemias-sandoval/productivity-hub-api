@@ -49,16 +49,8 @@ namespace productivity_hub_api.Controllers
             return Ok(response);
         }
 
-        [HttpGet("usuario/{id}")]
-        [Authorize]
-        public async Task<ActionResult<UsuarioDto>> GetById(int id)
-        {
-            var proyetoDto = await _usuarioService.GetByIdAsync(id);
-            return proyetoDto == null ? NotFound() : Ok(proyetoDto);
-        }
-
         [HttpPost("usuario")]
-        public async Task<ActionResult<UsuarioDto>> Add(CreateUsuarioDto createUsuarioDto, CancellationToken cancellationToken)
+        public async Task<ActionResult> Add(CreateUsuarioDto createUsuarioDto, CancellationToken cancellationToken)
         {
             var validationResult = await _createUsuarioValidator.ValidateAsync(createUsuarioDto, cancellationToken);
 
@@ -67,8 +59,8 @@ namespace productivity_hub_api.Controllers
                 return BadRequest(validationResult.Errors);
             }
 
-            var usuarioDto = await _usuarioService.AddAsync(createUsuarioDto);
-            return CreatedAtAction(nameof(GetById), new { id = usuarioDto.Id }, usuarioDto);
+            await _usuarioService.AddAsync(createUsuarioDto);
+            return NoContent();
         }
     }
 }

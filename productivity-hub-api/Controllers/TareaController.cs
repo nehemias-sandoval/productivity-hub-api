@@ -43,7 +43,17 @@ namespace productivity_hub_api.Controllers
 
 
         [HttpGet]
-        public async Task<IEnumerable<TareaDto>> Get([FromQuery] int? idEtiqueta) => await _tareaService.GetAllAsync(idEtiqueta);
+        public async Task<ActionResult<IEnumerable<TareaDto>>> Get(
+            [FromQuery] int? idEtiqueta, 
+            int? idProyectoOrEvento, 
+            bool? isProyecto, 
+            DateTime? fecha)
+        {
+            if (idProyectoOrEvento.HasValue && !isProyecto.HasValue)
+                return BadRequest(new { message = "Al proporcionar idProyectoOrEvento debes proporcionar isProyecto" });
+
+            return Ok(await _tareaService.GetAllAsync(idEtiqueta, idProyectoOrEvento, isProyecto, fecha));
+        }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<TareaDto>> GetById(int id)
@@ -87,7 +97,8 @@ namespace productivity_hub_api.Controllers
             var tareaDto = await _tareaService.AddAsync(createTareaDto);
             if (tareaDto == null) return StatusCode(500);
 
-            return CreatedAtAction(nameof(GetById), new { id =  tareaDto.Id }, tareaDto);
+            var tareaById = await _tareaService.GetByIdAsync(tareaDto.Id);
+            return CreatedAtAction(nameof(GetById), new { id =  tareaDto.Id }, tareaById);
         }
 
         [HttpPut ("{id}")]

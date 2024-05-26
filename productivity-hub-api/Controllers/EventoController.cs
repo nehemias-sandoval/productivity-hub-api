@@ -48,7 +48,8 @@ namespace productivity_hub_api.Controllers
             var eventoDto = await _eventoService.AddAsync(createEventoDto);
             if (eventoDto == null) return StatusCode(500);
 
-            return CreatedAtAction(nameof(GetById), new { id = eventoDto.Id }, eventoDto);
+            var eventoById = await _eventoService.GetByIdAsync(eventoDto.Id);
+            return CreatedAtAction(nameof(GetById), new { id = eventoDto.Id }, eventoById);
         }
 
         [HttpPut("{id}")]
