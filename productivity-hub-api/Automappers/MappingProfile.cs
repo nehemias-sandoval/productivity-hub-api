@@ -49,6 +49,7 @@ namespace productivity_hub_api.Automappers
 
             //Subtarea
             CreateMap<CreateSubtareaDto, Subtarea>();
+            CreateMap<UpdateSubtareaDto, Subtarea>();
             CreateMap<Subtarea, SubtareaDto>().ReverseMap();
         }
     }

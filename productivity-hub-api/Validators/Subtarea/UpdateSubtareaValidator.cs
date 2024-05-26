@@ -8,7 +8,6 @@ namespace productivity_hub_api.Validators.Subtarea
         public UpdateSubtareaValidator()
         {
             RuleFor(x => x.Titulo).NotEmpty().WithMessage("El {PropertyName} es requerido");
-            RuleFor(x => x.Estado).NotEmpty().WithMessage("El {PropertyName} es requerido");
         }
     }
 }

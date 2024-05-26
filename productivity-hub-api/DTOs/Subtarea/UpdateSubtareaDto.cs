@@ -3,7 +3,5 @@
     public class UpdateSubtareaDto
     {
         public string Titulo { get; set; }
-
-        public bool Estado { get; set; }
     }
 }
