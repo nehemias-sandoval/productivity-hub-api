@@ -30,7 +30,7 @@ namespace productivity_hub_api.Repository.TareaRepository
             var usuarioDto = _httpContextAccessor.HttpContext?.Items["User"] as UsuarioDto;
 
             if (usuarioDto != null)
-                return await _context.Subtareas.Include(st => st.Tarea).Where(st => st.Id == id && st.Tarea.IdPersona == usuarioDto.Persona.Id).FirstOrDefaultAsync();
+                return await _context.Subtareas.Include(st => st.Tarea).ThenInclude(t => t.ProyectoTareas).ThenInclude(pt => pt.Proyecto).Where(st => st.Id == id && st.Tarea.IdPersona == usuarioDto.Persona.Id).FirstOrDefaultAsync();
 
             return null;
         }
