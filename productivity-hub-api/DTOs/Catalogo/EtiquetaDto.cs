@@ -1,4 +1,4 @@
-﻿namespace productivity_hub_api.DTOs.Etiqueta
+﻿namespace productivity_hub_api.DTOs.Catalogo
 {
     public class EtiquetaDto
     {

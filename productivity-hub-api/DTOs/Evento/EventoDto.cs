@@ -1,4 +1,4 @@
-﻿using productivity_hub_api.DTOs.TipoEvento;
+﻿using productivity_hub_api.DTOs.Catalogo;
 
 namespace productivity_hub_api.DTOs.Evento
 {

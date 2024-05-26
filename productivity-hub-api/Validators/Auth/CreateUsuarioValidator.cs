@@ -11,7 +11,9 @@ namespace productivity_hub_api.Validators.Auth
             RuleFor(x => x.Password).NotEmpty().WithMessage("El {PropertyName} es requerido");
             RuleFor(x => x.Persona.Nombre).NotEmpty().WithMessage("El {PropertyName} es requerido");
             RuleFor(x => x.Persona.Apellido).NotEmpty().WithMessage("El {PropertyName} es requerido");
-            RuleFor(x => x.Persona.FechaNacimiento).NotEmpty().WithMessage("El {PropertyName} es requerido");
+            RuleFor(x => x.Persona.FechaNacimiento)
+                .NotEmpty().WithMessage("El {PropertyName} es requerido")
+                .LessThan(DateTime.Today).WithMessage("La {PropertyName} no puede ser igual o mayor al día actual");
         }
     }
 }
