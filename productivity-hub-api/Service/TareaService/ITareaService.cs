@@ -12,7 +12,7 @@ namespace productivity_hub_api.Service.TareaService
 
         Task<TareaDto?> UpdateAsync(int id, UpdateTareaDto updateDto);
 
-        Task<TareaDto?> DeleteAsync(int id);
+        Task<bool?> DeleteAsync(int id);
 
         Task<TareaDto?> ChangeEtiquetaAsync(int id, ChangeEtiquetaTareaDto changeDto);
 

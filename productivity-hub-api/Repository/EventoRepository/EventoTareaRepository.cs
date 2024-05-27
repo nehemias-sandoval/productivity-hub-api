@@ -12,5 +12,9 @@ namespace productivity_hub_api.Repository.EventoRepository
         }
 
         public async Task AddAsync(EventoTarea eventoTarea) => await _context.EventosTareas.AddAsync(eventoTarea);
+
+        public void Delete(IEnumerable<EventoTarea> eventoTareas) => _context.EventosTareas.RemoveRange(eventoTareas);
+
+        public async Task SaveAsync() => await _context.SaveChangesAsync();
     }
 }

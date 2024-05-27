@@ -43,7 +43,7 @@ namespace productivity_hub_api.Repository.TareaRepository
             _context.Subtareas.Entry(subtarea).State = EntityState.Modified;
         }
 
-        public void Delete(Subtarea subtarea) => _context.Subtareas.Remove(subtarea);
+        public void Delete(IEnumerable<Subtarea> subtareas) => _context.Subtareas.RemoveRange(subtareas);
 
         public async Task SaveAsync() => await _context.SaveChangesAsync();
     }

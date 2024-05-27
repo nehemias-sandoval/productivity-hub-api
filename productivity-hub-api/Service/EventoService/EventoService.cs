@@ -3,21 +3,32 @@ using productivity_hub_api.DTOs.Auth;
 using productivity_hub_api.DTOs.Evento;
 using productivity_hub_api.Models;
 using productivity_hub_api.Repository;
+using productivity_hub_api.Repository.EventoRepository;
+using System.Transactions;
 
 namespace productivity_hub_api.Service.EventoService
 {
     public class EventoService : IEventoService<EventoDto, CreateEventoDto, UpdateEventoDto>
     {
         private IRepository<Evento> _eventoRepository;
+        private IRepository<Tarea> _tareaRepository;
+        private IRepository<Subtarea> _subtareaRepository;
+        private EventoTareaRepository _eventoTareaRepository;
         private IMapper _mapper;
         private IHttpContextAccessor _httpContextAccessor;
 
         public EventoService(
             [FromKeyedServices("eventoRepository")] IRepository<Evento> eventoRepository,
+            [FromKeyedServices("tareaRepository")] IRepository<Tarea> tareaRepository,
+            [FromKeyedServices("subtareaRepository")] IRepository<Subtarea> subtareaRepository,
+            EventoTareaRepository eventoTareaRepository,
             IMapper mapper,
             IHttpContextAccessor httpContextAccessor)
         {
             _eventoRepository = eventoRepository;
+            _tareaRepository = tareaRepository;
+            _subtareaRepository = subtareaRepository;
+            _eventoTareaRepository = eventoTareaRepository;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
         }
@@ -61,7 +72,7 @@ namespace productivity_hub_api.Service.EventoService
             return null;
         }
 
-        public async Task<EventoDto> AddAsync(CreateEventoDto createEventoDto)
+        public async Task<EventoDto?> AddAsync(CreateEventoDto createEventoDto)
         {
             var usuarioDto = _httpContextAccessor.HttpContext?.Items["User"] as UsuarioDto;
             var evento = _mapper.Map<Evento>(createEventoDto);
@@ -95,22 +106,51 @@ namespace productivity_hub_api.Service.EventoService
             return null;
         }
 
-        public async Task<EventoDto?> DeleteAsync(int id)
+        public async Task<bool?> DeleteAsync(int id)
         {
             var usuarioDto = _httpContextAccessor.HttpContext?.Items["User"] as UsuarioDto;
-            var evento = await _eventoRepository.GetByIdAsync(id);
 
-            if (evento != null && usuarioDto != null && evento.IdPersona == usuarioDto.Persona.Id)
+            try
             {
-                var eventoDto = _mapper.Map<EventoDto>(evento);
+                var transactionOptions = new TransactionOptions
+                {
+                    IsolationLevel = IsolationLevel.ReadCommitted,
+                    Timeout = TransactionManager.DefaultTimeout
+                };
 
-                _eventoRepository.Delete(evento);
-                await _eventoRepository.SaveAsync();
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, transactionOptions, TransactionScopeAsyncFlowOption.Enabled))
+                {
+                    var evento = await _eventoRepository.GetByIdAsync(id);
 
-                return eventoDto;
+                    if (evento != null && usuarioDto != null && evento.IdPersona == usuarioDto.Persona.Id)
+                    {
+                        var eventoTareas = evento.EventoTareas;
+                        var tareas = eventoTareas.Select(et => et.Tarea);
+                        var subtareas = tareas.SelectMany(st => st.Subtareas);
+
+                        if (eventoTareas.Count() > 0) _eventoTareaRepository.Delete(eventoTareas);
+
+                        if (subtareas.Count() > 0) _subtareaRepository.Delete(subtareas);
+
+                        if (tareas.Count() > 0) _tareaRepository.Delete(tareas);
+
+                        _eventoRepository.Delete([evento]);
+                        await _eventoRepository.SaveAsync();
+                    }
+                    else
+                    {
+                        return null;
+                    }
+
+                    transaction.Complete();                   
+                }
+
+                return true;
             }
-
-            return null;
+            catch(Exception)
+            {
+                return false;
+            }
         }
     }
 }

@@ -10,7 +10,7 @@
 
         Task<ProyectoDto?> UpdateAsync(int id, UpdateProyectoDto updateDto);
 
-        Task<ProyectoDto?> DeleteAsync(int id);
+        Task<bool?> DeleteAsync(int id);
 
         Task ChangeEstadoAsync(int id);
     }

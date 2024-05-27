@@ -10,6 +10,6 @@
 
         Task<EventoDto?> UpdateAsync(int id, UpdateEventoDto updateDto);
 
-        Task<EventoDto?> DeleteAsync(int id);
+        Task<bool?> DeleteAsync(int id);
     }
 }

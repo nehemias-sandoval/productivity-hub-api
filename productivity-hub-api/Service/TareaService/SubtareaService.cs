@@ -87,21 +87,19 @@ namespace productivity_hub_api.Service.TareaService
             return null;
         }
 
-        public async Task<SubtareaDto?> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
             var subtarea = await _repositorySubtarea.GetByIdAsync(id);
 
             if (subtarea != null)
             {
-                var subtaraDto = _mapper.Map<SubtareaDto>(subtarea);
-
-                _repositorySubtarea.Delete(subtarea);
+                _repositorySubtarea.Delete([subtarea]);
                 await _repositorySubtarea.SaveAsync();
 
-                return subtaraDto;
+                return true;
             }
 
-            return null;
+            return false;
         }
 
         public async Task<SubtareaDto?> ChangeStateAsync(int id)

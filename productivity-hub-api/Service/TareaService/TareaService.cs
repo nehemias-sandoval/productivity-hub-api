@@ -7,7 +7,9 @@ using productivity_hub_api.Repository;
 using productivity_hub_api.Repository.CatalogoRepository;
 using productivity_hub_api.Repository.EventoRepository;
 using productivity_hub_api.Repository.ProyectoRepository;
+using productivity_hub_api.Repository.TareaRepository;
 using productivity_hub_api.Service.ProyectoService;
+using System.Threading;
 using System.Transactions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -16,6 +18,7 @@ namespace productivity_hub_api.Service.TareaService
     public class TareaService : ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto, ChangeEtiquetaTareaDto>
     {
         private IRepository<Tarea> _tareaRepository;
+        private IRepository<Subtarea> _subtareaRepository;
         private IRepository<Proyecto> _proyectoRepository;
         private IRepository<Evento> _eventoRepository;
         private ProyectoTareaRepository _proyectoTareaRepository;
@@ -27,6 +30,7 @@ namespace productivity_hub_api.Service.TareaService
 
         public TareaService(
             [FromKeyedServices("tareaRepository")] IRepository<Tarea> tareaRepository,
+            [FromKeyedServices("subtareaRepository")] IRepository<Subtarea> subtareaRepository,
             [FromKeyedServices("proyectoRepository")] IRepository<Proyecto> proyectoRepository,
             [FromKeyedServices("eventoRepository")] IRepository<Evento> eventoRepository,
             ProyectoTareaRepository proyectoTareaRepository,
@@ -37,6 +41,7 @@ namespace productivity_hub_api.Service.TareaService
             [FromKeyedServices("proyectoService")] IProyectoService<ProyectoDto, CreateProyectoDto, UpdateProyectoDto> proyectoService)
         {
             _tareaRepository = tareaRepository;
+            _subtareaRepository = subtareaRepository;
             _mapper = mapper;
             _proyectoRepository = proyectoRepository;
             _eventoRepository = eventoRepository;
@@ -184,22 +189,69 @@ namespace productivity_hub_api.Service.TareaService
             return null;
         }
 
-        public async Task<TareaDto?> DeleteAsync(int id)
+        public async Task<bool?> DeleteAsync(int id)
         {
             var usuarioDto = _httpContextAccessor.HttpContext?.Items["User"] as UsuarioDto;
-            var tarea = await _tareaRepository.GetByIdAsync(id);
 
-            if (tarea != null && usuarioDto != null && tarea.IdPersona == usuarioDto.Persona.Id)
+            try
             {
-                var tareaDto = _mapper.Map<TareaDto>(tarea);
+                var transactionOptions = new TransactionOptions
+                {
+                    IsolationLevel = IsolationLevel.ReadCommitted,
+                    Timeout = TransactionManager.DefaultTimeout
+                };
 
-                _tareaRepository.Delete(tarea);
-                await _tareaRepository.SaveAsync();
+                int? idProyecto = null;
 
-                return tareaDto;
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, transactionOptions, TransactionScopeAsyncFlowOption.Enabled))
+                {
+                    var tarea = await _tareaRepository.GetByIdAsync(id);
+
+                    if (tarea != null && usuarioDto != null && tarea.IdPersona == usuarioDto.Persona.Id)
+                    {
+                        var proyectoTareas = tarea.ProyectoTareas;
+                        var eventosTareas = tarea.EventoTareas;
+                        var subtareas = tarea.Subtareas;
+
+                        if (proyectoTareas.Count() > 0)
+                        {
+                            idProyecto = proyectoTareas.Select(pt => pt.IdProyecto).FirstOrDefault();
+                            _proyectoTareaRepository.Delete(proyectoTareas);
+                            await _proyectoTareaRepository.SaveAsync();
+                        }
+
+                        if (eventosTareas.Count() > 0)
+                        {
+                            _eventoTareaRepository.Delete(eventosTareas);
+                            await _eventoTareaRepository.SaveAsync();
+                        }
+
+                        if (subtareas.Count() > 0)
+                        {
+                            _subtareaRepository.Delete(subtareas);
+                            await _subtareaRepository.SaveAsync();
+                        }                       
+
+                        _tareaRepository.Delete([tarea]);
+                        await _tareaRepository.SaveAsync();
+                    }
+                    else
+                    {
+                        return null;
+                    }
+
+                    transaction.Complete(); 
+                }
+
+                if (idProyecto.HasValue) await _proyectoService.ChangeEstadoAsync(idProyecto.Value);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
             }
 
-            return null;
         }
 
         public async Task<TareaDto?> ChangeEtiquetaAsync(int id, ChangeEtiquetaTareaDto changeEtiquetaTareaDto)

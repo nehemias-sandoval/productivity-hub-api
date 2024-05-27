@@ -13,7 +13,7 @@ namespace productivity_hub_api.Service.TareaService
 
         Task<SubtareaDto?> UpdateAsync(int id, UpdateSubtareaDto updateDto);
 
-        Task<SubtareaDto?> DeleteAsync(int id);
+        Task<bool> DeleteAsync(int id);
 
         Task<SubtareaDto?> ChangeStateAsync(int id);
     }

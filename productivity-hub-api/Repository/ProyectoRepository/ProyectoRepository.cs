@@ -14,7 +14,12 @@ namespace productivity_hub_api.Repository.ProyectoRepository
 
         public async Task<IEnumerable<Proyecto>> GetAllAsync() => await _context.Proyectos.ToListAsync();
 
-        public async Task<Proyecto?> GetByIdAsync(int id) =>  await _context.Proyectos.Include(p => p.ProyectoTareas).ThenInclude(pt => pt.Tarea).Where(p => p.Id == id).FirstOrDefaultAsync();
+        public async Task<Proyecto?> GetByIdAsync(int id) =>  await _context.Proyectos
+            .Include(p => p.ProyectoTareas)
+            .ThenInclude(pt => pt.Tarea)
+            .ThenInclude(t => t.Subtareas)
+            .Where(p => p.Id == id)
+            .FirstOrDefaultAsync();
 
         public async Task AddAsync(Proyecto proyecto) => await _context.Proyectos.AddAsync(proyecto);
 
@@ -24,7 +29,7 @@ namespace productivity_hub_api.Repository.ProyectoRepository
             _context.Proyectos.Entry(proyecto).State = EntityState.Modified;
         }
 
-        public void Delete(Proyecto proyecto) => _context.Proyectos.Remove(proyecto);
+        public void Delete(IEnumerable<Proyecto> proyectos) => _context.Proyectos.RemoveRange(proyectos);
 
         public async Task SaveAsync() => await _context.SaveChangesAsync();
     }

@@ -12,5 +12,9 @@ namespace productivity_hub_api.Repository.ProyectoRepository
         }
 
         public async Task AddAsync(ProyectoTarea proyectoTarea) => await _context.ProyectoTareas.AddAsync(proyectoTarea);
+
+        public void Delete(IEnumerable<ProyectoTarea> proyectoTareas) => _context.ProyectoTareas.RemoveRange(proyectoTareas);
+
+        public async Task SaveAsync() => await _context.SaveChangesAsync();
     }
 }

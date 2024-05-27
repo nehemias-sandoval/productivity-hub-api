@@ -66,10 +66,12 @@ namespace productivity_hub_api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<ProyectoDto>> Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var proyectoDto = await _proyectoService.DeleteAsync(id);
-            return proyectoDto == null ? NotFound() : Ok(proyectoDto);
+            var result = await _proyectoService.DeleteAsync(id);
+            if (!result.HasValue) return NotFound();
+
+            return result.Value ? Ok() : StatusCode(500);
         }
     }
 }

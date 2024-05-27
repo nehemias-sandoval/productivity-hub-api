@@ -14,7 +14,13 @@ namespace productivity_hub_api.Repository.EventoRepository
 
         public async Task<IEnumerable<Evento>> GetAllAsync() => await _context.Eventos.Include(e => e.TipoEvento).ToListAsync();
 
-        public async Task<Evento?> GetByIdAsync(int id) => await _context.Eventos.Include(e => e.TipoEvento).Where(e => e.Id == id).FirstOrDefaultAsync();
+        public async Task<Evento?> GetByIdAsync(int id) => await _context.Eventos
+            .Include(e => e.TipoEvento)
+            .Include(e => e.EventoTareas)
+            .ThenInclude(et => et.Tarea)
+            .ThenInclude(t => t.Subtareas)
+            .Where(e => e.Id == id)
+            .FirstOrDefaultAsync();
 
         public async Task AddAsync(Evento evento) => await _context.Eventos.AddAsync(evento);
 
@@ -24,7 +30,7 @@ namespace productivity_hub_api.Repository.EventoRepository
             _context.Eventos.Entry(evento).State = EntityState.Modified;
         }
 
-        public void Delete(Evento evento) => _context.Eventos.Remove(evento);
+        public void Delete(IEnumerable<Evento> eventos) => _context.Eventos.RemoveRange(eventos);
 
         public async Task SaveAsync() => await _context.SaveChangesAsync();
     }
