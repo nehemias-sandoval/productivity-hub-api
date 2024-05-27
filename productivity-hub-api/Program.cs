@@ -28,6 +28,8 @@ using productivity_hub_api.Service.TareaService;
 using productivity_hub_api.Service.CatalogoService;
 using productivity_hub_api.DTOs.Catalogo;
 using productivity_hub_api.Repository.ConfiguracionRepository;
+using Microsoft.Extensions.Options;
+using productivity_hub_api.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -108,6 +110,9 @@ builder.Services.AddScoped<ConfiguracionRepository>();
 
 // Configuration
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
+builder.Services.Configure<GoogleCalendarSettings>(builder.Configuration.GetSection(nameof(GoogleCalendarSettings)));
+builder.Services.AddSingleton<IGoogleCalendarSettings>(s => s.GetRequiredService<IOptions<GoogleCalendarSettings>>().Value);
+
 
 // Service
 builder.Services.AddScoped<IUsuarioService<
