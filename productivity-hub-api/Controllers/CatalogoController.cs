@@ -10,16 +10,13 @@ namespace productivity_hub_api.Controllers
     [Authorize]
     public class CatalogoController : ControllerBase
     {
-        private ICatalogoService<EtiquetaDto, FrecuenciaDto, PrioridadDto, TipoEventoDto, TipoNotificacionDto> _catalogoService;
+        private ICatalogoService<EtiquetaDto, PrioridadDto, TipoEventoDto, TipoNotificacionDto> _catalogoService;
 
         public CatalogoController(
-            [FromKeyedServices("catalogoService")] ICatalogoService<EtiquetaDto, FrecuenciaDto, PrioridadDto, TipoEventoDto, TipoNotificacionDto> catalogoService)
+            [FromKeyedServices("catalogoService")] ICatalogoService<EtiquetaDto, PrioridadDto, TipoEventoDto, TipoNotificacionDto> catalogoService)
         {
             _catalogoService = catalogoService;
         }
-
-        [HttpGet("frecuencia")]
-        public async Task<IEnumerable<FrecuenciaDto>> GetFrecuencias() => await _catalogoService.GetAllFrecuenciasAsync();
 
         [HttpGet("prioridad")]
         public async Task<IEnumerable<PrioridadDto>> GetPrioridades() => await _catalogoService.GetAllPrioridadesAsync();

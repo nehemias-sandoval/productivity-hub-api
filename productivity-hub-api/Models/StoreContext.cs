@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using productivity_hub_api.Seeders;
 
 namespace productivity_hub_api.Models
 {
@@ -20,6 +19,9 @@ namespace productivity_hub_api.Models
 
             modelBuilder.Entity<Proyecto>()
                 .Property(p => p.Estado).HasDefaultValue(false);
+
+            modelBuilder.Entity<Configuracion>()
+                .Property(c => c.Tema).HasDefaultValue("Light");
 
             base.OnModelCreating(modelBuilder);
         }
@@ -44,15 +46,11 @@ namespace productivity_hub_api.Models
 
         public DbSet<Recordatorio> Recordatorios { get; set; }
 
-        public DbSet<Frecuencia> Frecuencias { get; set; }
-
         public DbSet<Configuracion> Configuraciones { get; set; }
 
         public DbSet<TipoEvento> TipoEventos { get; set; }
 
         public DbSet<TipoNotificacion> TipoNotificaciones { get; set; } 
-
-        public DbSet<EventoRecordatorio> EventoRecordatorios { get; set; }
 
         public DbSet<EventoTarea> EventosTareas { get; set;}
 

@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using productivity_hub_api.DTOs.Auth;
 using productivity_hub_api.Models;
 using productivity_hub_api.Repository.AuthRepository;
+using productivity_hub_api.Repository.ConfiguracionRepository;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -14,15 +15,18 @@ namespace productivity_hub_api.Service.AuthService
     {
         private AppSettings _appSettings;
         private IUsuarioRepository _usuarioRepository;
+        private ConfiguracionRepository _configuracionRepository;
         private IMapper _mapper;
 
         public UsuarioService(
             IOptions<AppSettings> appSettings,
             IUsuarioRepository usuarioRepository,
+            ConfiguracionRepository configuracionRepository,
             IMapper mapper)
         {
             _appSettings = appSettings.Value;
             _usuarioRepository = usuarioRepository;
+            _configuracionRepository = configuracionRepository;
             _mapper = mapper;
         }
 
@@ -64,6 +68,9 @@ namespace productivity_hub_api.Service.AuthService
 
             await _usuarioRepository.AddAsync(usuario);
             await _usuarioRepository.SaveAsync();
+
+            await _configuracionRepository.AddAsync(new Configuracion { NotificacionCorreo = true, IdUsuario = usuario.Id });
+            await _configuracionRepository.SaveAsync();
 
             var usuarioDto = _mapper.Map<UsuarioDto>(usuario);
 

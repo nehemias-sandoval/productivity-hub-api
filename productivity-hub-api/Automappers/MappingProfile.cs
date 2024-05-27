@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using productivity_hub_api.DTOs.Auth;
 using productivity_hub_api.DTOs.Catalogo;
+using productivity_hub_api.DTOs.Configuracion;
 using productivity_hub_api.DTOs.Evento;
 using productivity_hub_api.DTOs.Persona;
 using productivity_hub_api.DTOs.Proyecto;
@@ -19,13 +20,14 @@ namespace productivity_hub_api.Automappers
             CreateMap<CreateUsuarioDto, Usuario>().ReverseMap();
             CreateMap<Usuario, AuthenticateResDto>().ReverseMap();
 
+            // Configuracion
+            CreateMap<Configuracion, ConfiguracionDto>().ReverseMap();
+
             // Catalogos
             CreateMap<Etiqueta, EtiquetaDto>().ReverseMap();
-            CreateMap<Frecuencia, FrecuenciaDto>().ReverseMap();
             CreateMap<Prioridad,  PrioridadDto>().ReverseMap(); 
             CreateMap<TipoEvento, TipoEventoDto>().ReverseMap();
             CreateMap<TipoNotificacion, TipoNotificacionDto>().ReverseMap();
-
 
             // Persona
             CreateMap<CreatePersonaDto, Persona>().ReverseMap();

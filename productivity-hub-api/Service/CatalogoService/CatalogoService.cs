@@ -4,7 +4,7 @@ using productivity_hub_api.Repository.CatalogoRepository;
 
 namespace productivity_hub_api.Service.CatalogoService
 {
-    public class CatalogoService : ICatalogoService<EtiquetaDto, FrecuenciaDto, PrioridadDto, TipoEventoDto, TipoNotificacionDto>
+    public class CatalogoService : ICatalogoService<EtiquetaDto, PrioridadDto, TipoEventoDto, TipoNotificacionDto>
     {
         private CatalogoRepository _catalogoRepository;
         IMapper _mapper;
@@ -21,14 +21,6 @@ namespace productivity_hub_api.Service.CatalogoService
             var etiquetasDto = _mapper.Map<IEnumerable<EtiquetaDto>>(etiqueas);
 
             return etiquetasDto;
-        }
-
-        public async Task<IEnumerable<FrecuenciaDto>> GetAllFrecuenciasAsync()
-        {
-           var frecuencias = await _catalogoRepository.GetAllFrecuenciasAsync();
-           var frecuenciasDto = _mapper.Map<IEnumerable<FrecuenciaDto>>(frecuencias);
-           
-           return frecuenciasDto;
         }
 
         public async Task<IEnumerable<PrioridadDto>> GetAllPrioridadesAsync()

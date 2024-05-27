@@ -26,19 +26,6 @@ namespace productivity_hub_api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Frecuencias",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Frecuencias", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Prioridades",
                 columns: table => new
                 {
@@ -116,8 +103,7 @@ namespace productivity_hub_api.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Tema = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DobleFactor = table.Column<bool>(type: "bit", nullable: false),
+                    Tema = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "Light"),
                     NotificacionCorreo = table.Column<bool>(type: "bit", nullable: false),
                     IdUsuario = table.Column<int>(type: "int", nullable: false)
                 },
@@ -270,39 +256,6 @@ namespace productivity_hub_api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EventoRecordatorios",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    IdEvento = table.Column<int>(type: "int", nullable: false),
-                    IdRecordatorio = table.Column<int>(type: "int", nullable: false),
-                    IdFrecuencia = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EventoRecordatorios", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_EventoRecordatorios_Eventos_IdEvento",
-                        column: x => x.IdEvento,
-                        principalTable: "Eventos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_EventoRecordatorios_Frecuencias_IdFrecuencia",
-                        column: x => x.IdFrecuencia,
-                        principalTable: "Frecuencias",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_EventoRecordatorios_Recordatorios_IdRecordatorio",
-                        column: x => x.IdRecordatorio,
-                        principalTable: "Recordatorios",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "EventosTareas",
                 columns: table => new
                 {
@@ -378,21 +331,6 @@ namespace productivity_hub_api.Migrations
                 table: "Configuraciones",
                 column: "IdUsuario",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_EventoRecordatorios_IdEvento",
-                table: "EventoRecordatorios",
-                column: "IdEvento");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_EventoRecordatorios_IdFrecuencia",
-                table: "EventoRecordatorios",
-                column: "IdFrecuencia");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_EventoRecordatorios_IdRecordatorio",
-                table: "EventoRecordatorios",
-                column: "IdRecordatorio");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Eventos_IdPersona",
@@ -473,9 +411,6 @@ namespace productivity_hub_api.Migrations
                 name: "Configuraciones");
 
             migrationBuilder.DropTable(
-                name: "EventoRecordatorios");
-
-            migrationBuilder.DropTable(
                 name: "EventosTareas");
 
             migrationBuilder.DropTable(
@@ -485,13 +420,10 @@ namespace productivity_hub_api.Migrations
                 name: "ProyectoTareas");
 
             migrationBuilder.DropTable(
-                name: "Subtareas");
-
-            migrationBuilder.DropTable(
-                name: "Frecuencias");
-
-            migrationBuilder.DropTable(
                 name: "Recordatorios");
+
+            migrationBuilder.DropTable(
+                name: "Subtareas");
 
             migrationBuilder.DropTable(
                 name: "Eventos");

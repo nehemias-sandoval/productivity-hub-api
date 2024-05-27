@@ -1,4 +1,5 @@
-﻿using productivity_hub_api.DTOs.Persona;
+﻿using productivity_hub_api.DTOs.Configuracion;
+using productivity_hub_api.DTOs.Persona;
 
 namespace productivity_hub_api.DTOs.Auth
 {
@@ -9,6 +10,8 @@ namespace productivity_hub_api.DTOs.Auth
         public string Email { get; set; }
 
         public PersonaDto Persona { get; set; }
+
+        public ConfiguracionDto Configuracion { get; set; }
 
         public string Token { get; set; }
     }

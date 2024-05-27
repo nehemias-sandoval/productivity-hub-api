@@ -12,7 +12,7 @@ using productivity_hub_api.Models;
 namespace productivity_hub_api.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20240525235008_Initial")]
+    [Migration("20240527153800_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -33,9 +33,6 @@ namespace productivity_hub_api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("DobleFactor")
-                        .HasColumnType("bit");
-
                     b.Property<int>("IdUsuario")
                         .HasColumnType("int");
 
@@ -44,7 +41,9 @@ namespace productivity_hub_api.Migrations
 
                     b.Property<string>("Tema")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("Light");
 
                     b.HasKey("Id");
 
@@ -109,34 +108,6 @@ namespace productivity_hub_api.Migrations
                     b.ToTable("Eventos");
                 });
 
-            modelBuilder.Entity("productivity_hub_api.Models.EventoRecordatorio", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("IdEvento")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdFrecuencia")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdRecordatorio")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdEvento");
-
-                    b.HasIndex("IdFrecuencia");
-
-                    b.HasIndex("IdRecordatorio");
-
-                    b.ToTable("EventoRecordatorios");
-                });
-
             modelBuilder.Entity("productivity_hub_api.Models.EventoTarea", b =>
                 {
                     b.Property<int>("Id")
@@ -158,23 +129,6 @@ namespace productivity_hub_api.Migrations
                     b.HasIndex("IdTarea");
 
                     b.ToTable("EventosTareas");
-                });
-
-            modelBuilder.Entity("productivity_hub_api.Models.Frecuencia", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Frecuencias");
                 });
 
             modelBuilder.Entity("productivity_hub_api.Models.Notificacion", b =>
@@ -504,33 +458,6 @@ namespace productivity_hub_api.Migrations
                     b.Navigation("TipoEvento");
                 });
 
-            modelBuilder.Entity("productivity_hub_api.Models.EventoRecordatorio", b =>
-                {
-                    b.HasOne("productivity_hub_api.Models.Evento", "Evento")
-                        .WithMany("EventoRecordatorios")
-                        .HasForeignKey("IdEvento")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("productivity_hub_api.Models.Frecuencia", "Frecuencia")
-                        .WithMany("EventoRecordatorios")
-                        .HasForeignKey("IdFrecuencia")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("productivity_hub_api.Models.Recordatorio", "Recordatorio")
-                        .WithMany("EventoRecordatorios")
-                        .HasForeignKey("IdRecordatorio")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Evento");
-
-                    b.Navigation("Frecuencia");
-
-                    b.Navigation("Recordatorio");
-                });
-
             modelBuilder.Entity("productivity_hub_api.Models.EventoTarea", b =>
                 {
                     b.HasOne("productivity_hub_api.Models.Evento", "Evento")
@@ -642,14 +569,7 @@ namespace productivity_hub_api.Migrations
 
             modelBuilder.Entity("productivity_hub_api.Models.Evento", b =>
                 {
-                    b.Navigation("EventoRecordatorios");
-
                     b.Navigation("EventoTareas");
-                });
-
-            modelBuilder.Entity("productivity_hub_api.Models.Frecuencia", b =>
-                {
-                    b.Navigation("EventoRecordatorios");
                 });
 
             modelBuilder.Entity("productivity_hub_api.Models.Persona", b =>
@@ -660,11 +580,6 @@ namespace productivity_hub_api.Migrations
             modelBuilder.Entity("productivity_hub_api.Models.Proyecto", b =>
                 {
                     b.Navigation("ProyectoTareas");
-                });
-
-            modelBuilder.Entity("productivity_hub_api.Models.Recordatorio", b =>
-                {
-                    b.Navigation("EventoRecordatorios");
                 });
 
             modelBuilder.Entity("productivity_hub_api.Models.Tarea", b =>

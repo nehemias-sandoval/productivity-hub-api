@@ -27,6 +27,7 @@ using productivity_hub_api.Service.ProyectoService;
 using productivity_hub_api.Service.TareaService;
 using productivity_hub_api.Service.CatalogoService;
 using productivity_hub_api.DTOs.Catalogo;
+using productivity_hub_api.Repository.ConfiguracionRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -103,6 +104,7 @@ builder.Services.AddKeyedScoped<IRepository<Subtarea>, SubtareaRepository>("subt
 builder.Services.AddScoped<ProyectoTareaRepository>();
 builder.Services.AddScoped<EventoTareaRepository>();
 builder.Services.AddScoped<CatalogoRepository>();
+builder.Services.AddScoped<ConfiguracionRepository>();
 
 // Configuration
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
@@ -114,7 +116,7 @@ builder.Services.AddKeyedScoped<IProyectoService<ProyectoDto, CreateProyectoDto,
 builder.Services.AddKeyedScoped<IEventoService<EventoDto, CreateEventoDto, UpdateEventoDto>, EventoService>("eventoService");
 builder.Services.AddKeyedScoped<ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto, ChangeEtiquetaTareaDto>, TareaService>("tareaService");
 builder.Services.AddKeyedScoped<ISubtareaService<SubtareaDto, CreateSubtareaDto, UpdateSubtareaDto>, SubtareaService>("subtareaService");
-builder.Services.AddKeyedScoped<ICatalogoService<EtiquetaDto, FrecuenciaDto, PrioridadDto, TipoEventoDto, TipoNotificacionDto>, CatalogoService>("catalogoService");
+builder.Services.AddKeyedScoped<ICatalogoService<EtiquetaDto, PrioridadDto, TipoEventoDto, TipoNotificacionDto>, CatalogoService>("catalogoService");
 
 // Entity Framework
 builder.Services.AddDbContext<StoreContext>(options =>
@@ -128,7 +130,6 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
 
-    FrecuenciaSeeder.Initialize(services);
     PrioridadSeeder.Initialize(services);
     TipoNotificacionSeeder.Initialize(services);
     TipoEventoSeeder.Initialize(services);

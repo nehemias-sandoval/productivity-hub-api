@@ -14,7 +14,7 @@ namespace productivity_hub_api.Repository.AuthRepository
 
         public async Task<Usuario?> Validate(string email, string password)
         {
-            var usuario = await _context.Usuarios.Include(u => u.Persona).SingleOrDefaultAsync(u => u.Email == email);
+            var usuario = await _context.Usuarios.Include(u => u.Persona).Include(u => u.Configuracion).SingleOrDefaultAsync(u => u.Email == email);
 
             if (usuario != null)
             {

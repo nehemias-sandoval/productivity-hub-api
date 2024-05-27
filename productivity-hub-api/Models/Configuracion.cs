@@ -11,8 +11,6 @@ namespace productivity_hub_api.Models
 
         public string Tema { get; set; }
 
-        public bool DobleFactor { get; set;}
-
         public bool NotificacionCorreo { get; set; }
 
         public int IdUsuario { get; set; }

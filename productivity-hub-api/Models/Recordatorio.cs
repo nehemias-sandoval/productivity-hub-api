@@ -15,7 +15,5 @@ namespace productivity_hub_api.Models
         public DateTime FechaHoraInicio { get; set; }
 
         public bool Estado {  get; set; }
-
-        public List<EventoRecordatorio> EventoRecordatorios { get; set; }
     }
 }

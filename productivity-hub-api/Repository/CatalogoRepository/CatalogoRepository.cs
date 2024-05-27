@@ -12,8 +12,6 @@ namespace productivity_hub_api.Repository.CatalogoRepository
             _context = context;
         }
 
-        public async Task<IEnumerable<Frecuencia>> GetAllFrecuenciasAsync() => await _context.Frecuencias.ToListAsync();
-
         public async Task<IEnumerable<Prioridad>> GetAllPrioridadesAsync() => await _context.Prioridades.ToListAsync();
 
         public async Task<Prioridad?> GetPrioridadByIdAsync(int id) => await _context.Prioridades.Where(p => p.Id == id).FirstOrDefaultAsync();
