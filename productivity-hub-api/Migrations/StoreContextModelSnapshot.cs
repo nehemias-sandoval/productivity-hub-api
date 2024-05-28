@@ -83,7 +83,10 @@ namespace productivity_hub_api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Fecha")
+                    b.Property<DateTime>("FechaFin")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaInicio")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("IdPersona")

@@ -176,7 +176,8 @@ namespace productivity_hub_api.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Titulo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FechaInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FechaFin = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IdTipoEvento = table.Column<int>(type: "int", nullable: false),
                     IdPersona = table.Column<int>(type: "int", nullable: false)
                 },

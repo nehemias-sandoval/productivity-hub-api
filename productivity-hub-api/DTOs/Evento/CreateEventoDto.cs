@@ -6,7 +6,9 @@
 
         public string Descripcion { get; set; }
 
-        public DateTime Fecha { get; set; }
+        public DateTime FechaInicio { get; set; }
+
+        public DateTime FechaFin { get; set; }
 
         public int IdTipoEvento { get; set; }
     }

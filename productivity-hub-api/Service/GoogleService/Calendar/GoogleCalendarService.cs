@@ -114,11 +114,11 @@ namespace productivity_hub_api.Service.GoogleService.Calendar
                         Description = evento.Descripcion,
                         Start = new EventDateTime
                         {
-                            DateTimeDateTimeOffset = DateTime.Now,
+                            DateTimeDateTimeOffset = evento.FechaInicio,
                         },
                         End = new EventDateTime
                         {
-                            DateTimeDateTimeOffset = evento.Fecha
+                            DateTimeDateTimeOffset = evento.FechaFin
                         },
                     };
 

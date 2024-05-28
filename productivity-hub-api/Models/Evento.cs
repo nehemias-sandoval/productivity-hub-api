@@ -14,7 +14,10 @@ namespace productivity_hub_api.Models
         public string Descripcion { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime Fecha { get; set; }
+        public DateTime FechaInicio { get; set; }
+
+        [DataType(DataType.Date)]
+        public DateTime FechaFin { get; set; }
 
         public int IdTipoEvento { get; set; }
 
