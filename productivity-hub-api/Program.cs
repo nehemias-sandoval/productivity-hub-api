@@ -30,6 +30,7 @@ using productivity_hub_api.DTOs.Catalogo;
 using productivity_hub_api.Repository.ConfiguracionRepository;
 using Microsoft.Extensions.Options;
 using productivity_hub_api.Settings;
+using productivity_hub_api.Service.GoogleService.Calendar;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -122,6 +123,7 @@ builder.Services.AddKeyedScoped<IEventoService<EventoDto, CreateEventoDto, Updat
 builder.Services.AddKeyedScoped<ITareaService<TareaDto, CreateTareaDto, UpdateTareaDto, ChangeEtiquetaTareaDto>, TareaService>("tareaService");
 builder.Services.AddKeyedScoped<ISubtareaService<SubtareaDto, CreateSubtareaDto, UpdateSubtareaDto>, SubtareaService>("subtareaService");
 builder.Services.AddKeyedScoped<ICatalogoService<EtiquetaDto, PrioridadDto, TipoEventoDto, TipoNotificacionDto>, CatalogoService>("catalogoService");
+builder.Services.AddScoped<IGoogleCalendarService, GoogleCalendarService>();
 
 // Entity Framework
 builder.Services.AddDbContext<StoreContext>(options =>

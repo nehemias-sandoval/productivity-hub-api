@@ -8,6 +8,8 @@ namespace productivity_hub_api.Service.GoogleService.Calendar
 
         Task<GoogleTokenResponse?> GetTokens(string code);
 
-        Task<string> AddToGoogleCalendar(GoogleCalendarReqDto googleCalendarReqDto);
+        Task<GoogleTokenResponse?> RefreshAccessTokenAsync(string refreshToken);
+
+        Task<string?> AddEventToGoogleCalendar(int idEvento, GoogleCalendarReqDto googleCalendarReqDto);
     }
 }

@@ -1,13 +1,19 @@
-﻿namespace productivity_hub_api.DTOs.GoogleCalendar
+﻿using Newtonsoft.Json;
+
+namespace productivity_hub_api.DTOs.GoogleCalendar
 {
     public class GoogleTokenResponse
     {
+        [JsonProperty("access_token")]
         public string AccessToken { get; set; }
 
+        [JsonProperty("refresh_token")]
         public string RefreshToken { get; set; }
 
+        [JsonProperty("token_type")]
         public string TokenType { get; set; }
 
+        [JsonProperty("expires_in")]
         public int ExpiresIn { get; set; }
     }
 }

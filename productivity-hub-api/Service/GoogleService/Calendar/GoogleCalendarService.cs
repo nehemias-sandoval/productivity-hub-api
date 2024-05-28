@@ -1,19 +1,30 @@
-﻿using Newtonsoft.Json;
+﻿using Google.Apis.Auth.OAuth2.Flows;
+using Google.Apis.Auth.OAuth2.Responses;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Calendar.v3.Data;
+using Google.Apis.Calendar.v3;
+using Google.Apis.Services;
+using Newtonsoft.Json;
 using productivity_hub_api.DTOs.GoogleCalendar;
 using productivity_hub_api.Settings;
 using System.Text;
+using productivity_hub_api.Models;
+using productivity_hub_api.Repository;
 
 namespace productivity_hub_api.Service.GoogleService.Calendar
 {
     public class GoogleCalendarService : IGoogleCalendarService
     {
         private readonly IGoogleCalendarSettings _settings;
-
         private readonly HttpClient _httpClient;
+        private IRepository<Evento> _eventoRepository;
 
-        public GoogleCalendarService(IGoogleCalendarSettings settings)
+        public GoogleCalendarService(
+            IGoogleCalendarSettings settings,
+            [FromKeyedServices("eventoRepository")] IRepository<Evento> eventoRepository)
         {
             _settings = settings;
+            _eventoRepository = eventoRepository;
             _httpClient = new HttpClient();
         }
 
@@ -48,9 +59,81 @@ namespace productivity_hub_api.Service.GoogleService.Calendar
             }
         }
 
-        public Task<string> AddToGoogleCalendar(GoogleCalendarReqDto googleCalendarReqDto)
+        public async Task<GoogleTokenResponse?> RefreshAccessTokenAsync(string refreshToken)
         {
-            throw new NotImplementedException();
+            string clientId = _settings.ClientId;
+            string clientSecret = _settings.ClientSecret;
+            var tokenEndpoint = "https://accounts.google.com/o/oauth2/token";
+
+            var content = new StringContent($"refresh_token={refreshToken}&client_id={clientId}&client_secret={clientSecret}&grant_type=refresh_token", Encoding.UTF8, "application/x-www-form-urlencoded");
+
+            var response = await _httpClient.PostAsync(tokenEndpoint, content);
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)
+            {
+                var tokenResponse = JsonConvert.DeserializeObject<GoogleTokenResponse>(responseContent);
+                return tokenResponse;
+            }
+
+            return null;
+        }
+
+        public async Task<string?> AddEventToGoogleCalendar(int idEvento, GoogleCalendarReqDto googleCalendarReqDto)
+        {
+            try
+            {
+                var evento = await _eventoRepository.GetByIdAsync(idEvento);
+
+                if (evento != null)
+                {
+                    var credentials = new UserCredential(
+                      new GoogleAuthorizationCodeFlow(
+                          new GoogleAuthorizationCodeFlow.Initializer
+                          {
+                              ClientSecrets = new ClientSecrets
+                              {
+                                  ClientId = _settings.ClientId,
+                                  ClientSecret = _settings.ClientSecret
+                              }
+                          }),
+                      _settings.User,
+                      new TokenResponse
+                      {
+                          RefreshToken = googleCalendarReqDto.RefreshToken
+                      });
+
+                    var service = new CalendarService(new BaseClientService.Initializer
+                    {
+                        HttpClientInitializer = credentials
+                    });
+
+                    var newEvent = new Event
+                    {
+                        Summary = evento.Titulo,
+                        Description = evento.Descripcion,
+                        Start = new EventDateTime
+                        {
+                            DateTimeDateTimeOffset = DateTime.Now,
+                        },
+                        End = new EventDateTime
+                        {
+                            DateTimeDateTimeOffset = evento.Fecha
+                        },
+                    };
+
+                    // Usa "primary" como el CalendarId para el calendario principal
+                    var insertRequest = service.Events.Insert(newEvent, _settings.CalendarId);
+                    var createdEvent = await insertRequest.ExecuteAsync();
+                    return createdEvent.Id;
+                }
+
+                return string.Empty;
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
         }
     }
 }
