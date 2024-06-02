@@ -31,6 +31,9 @@ using productivity_hub_api.Repository.ConfiguracionRepository;
 using Microsoft.Extensions.Options;
 using productivity_hub_api.Settings;
 using productivity_hub_api.Service.GoogleService.Calendar;
+using productivity_hub_api.Repository.NotificacionRepository;
+using productivity_hub_api.Service.NotificacionService;
+using productivity_hub_api.DTOs.Notificacion;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -108,6 +111,7 @@ builder.Services.AddScoped<ProyectoTareaRepository>();
 builder.Services.AddScoped<EventoTareaRepository>();
 builder.Services.AddScoped<CatalogoRepository>();
 builder.Services.AddScoped<ConfiguracionRepository>();
+builder.Services.AddScoped<NotificacionRepository>();
 
 // Configuration
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
@@ -124,6 +128,7 @@ builder.Services.AddKeyedScoped<ITareaService<TareaDto, CreateTareaDto, UpdateTa
 builder.Services.AddKeyedScoped<ISubtareaService<SubtareaDto, CreateSubtareaDto, UpdateSubtareaDto>, SubtareaService>("subtareaService");
 builder.Services.AddKeyedScoped<ICatalogoService<EtiquetaDto, PrioridadDto, TipoEventoDto, TipoNotificacionDto>, CatalogoService>("catalogoService");
 builder.Services.AddScoped<IGoogleCalendarService, GoogleCalendarService>();
+builder.Services.AddKeyedScoped<INotificacionService<NotificacionDto>, NotificacionService>("notificacionService");
 
 // Entity Framework
 builder.Services.AddDbContext<StoreContext>(options =>
