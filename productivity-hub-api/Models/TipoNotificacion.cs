@@ -12,8 +12,5 @@ namespace productivity_hub_api.Models
         public string Nombre { get; set; }
 
         public string Descripcion { get; set; }
-
-        public List<Notificacion> Notificaciones { get; set; }
-
     }
 }

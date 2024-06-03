@@ -119,34 +119,6 @@ namespace productivity_hub_api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Notificaciones",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Mensaje = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Leida = table.Column<bool>(type: "bit", nullable: false),
-                    IdTipoNotificacion = table.Column<int>(type: "int", nullable: false),
-                    UsuarioId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Notificaciones", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Notificaciones_TipoNotificaciones_IdTipoNotificacion",
-                        column: x => x.IdTipoNotificacion,
-                        principalTable: "TipoNotificaciones",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Notificaciones_Usuarios_UsuarioId",
-                        column: x => x.UsuarioId,
-                        principalTable: "Usuarios",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Personas",
                 columns: table => new
                 {
@@ -196,6 +168,41 @@ namespace productivity_hub_api.Migrations
                         principalTable: "TipoEventos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Notificaciones",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Mensaje = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Leida = table.Column<bool>(type: "bit", nullable: false),
+                    IdTipoNotificacion = table.Column<int>(type: "int", nullable: false),
+                    IdPersona = table.Column<int>(type: "int", nullable: false),
+                    UsuarioId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notificaciones", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Notificaciones_Personas_IdPersona",
+                        column: x => x.IdPersona,
+                        principalTable: "Personas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Notificaciones_TipoNotificaciones_IdTipoNotificacion",
+                        column: x => x.IdTipoNotificacion,
+                        principalTable: "TipoNotificaciones",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Notificaciones_Usuarios_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "Usuarios",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -352,6 +359,11 @@ namespace productivity_hub_api.Migrations
                 name: "IX_EventosTareas_IdTarea",
                 table: "EventosTareas",
                 column: "IdTarea");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notificaciones_IdPersona",
+                table: "Notificaciones",
+                column: "IdPersona");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Notificaciones_IdTipoNotificacion",

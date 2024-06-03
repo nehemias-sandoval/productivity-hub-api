@@ -20,5 +20,10 @@ namespace productivity_hub_api.Models
 
         [ForeignKey("IdTipoNotificacion")]
         public TipoNotificacion TipoNotificacion { get; set; }
+
+        public int IdPersona { get; set; }
+
+        [ForeignKey("IdPersona")]
+        public Persona Persona { get; set; }
     }
 }

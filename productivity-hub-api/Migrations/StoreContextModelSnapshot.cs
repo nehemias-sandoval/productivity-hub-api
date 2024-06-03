@@ -142,6 +142,9 @@ namespace productivity_hub_api.Migrations
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("IdPersona")
+                        .HasColumnType("int");
+
                     b.Property<int>("IdTipoNotificacion")
                         .HasColumnType("int");
 
@@ -156,6 +159,8 @@ namespace productivity_hub_api.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IdPersona");
 
                     b.HasIndex("IdTipoNotificacion");
 
@@ -477,8 +482,14 @@ namespace productivity_hub_api.Migrations
 
             modelBuilder.Entity("productivity_hub_api.Models.Notificacion", b =>
                 {
+                    b.HasOne("productivity_hub_api.Models.Persona", "Persona")
+                        .WithMany()
+                        .HasForeignKey("IdPersona")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("productivity_hub_api.Models.TipoNotificacion", "TipoNotificacion")
-                        .WithMany("Notificaciones")
+                        .WithMany()
                         .HasForeignKey("IdTipoNotificacion")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -486,6 +497,8 @@ namespace productivity_hub_api.Migrations
                     b.HasOne("productivity_hub_api.Models.Usuario", null)
                         .WithMany("Notificaciones")
                         .HasForeignKey("UsuarioId");
+
+                    b.Navigation("Persona");
 
                     b.Navigation("TipoNotificacion");
                 });
@@ -594,11 +607,6 @@ namespace productivity_hub_api.Migrations
             modelBuilder.Entity("productivity_hub_api.Models.TipoEvento", b =>
                 {
                     b.Navigation("Eventos");
-                });
-
-            modelBuilder.Entity("productivity_hub_api.Models.TipoNotificacion", b =>
-                {
-                    b.Navigation("Notificaciones");
                 });
 
             modelBuilder.Entity("productivity_hub_api.Models.Usuario", b =>

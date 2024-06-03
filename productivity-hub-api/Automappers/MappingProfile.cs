@@ -3,6 +3,7 @@ using productivity_hub_api.DTOs.Auth;
 using productivity_hub_api.DTOs.Catalogo;
 using productivity_hub_api.DTOs.Configuracion;
 using productivity_hub_api.DTOs.Evento;
+using productivity_hub_api.DTOs.Notificacion;
 using productivity_hub_api.DTOs.Persona;
 using productivity_hub_api.DTOs.Proyecto;
 using productivity_hub_api.DTOs.Subtarea;
@@ -53,6 +54,9 @@ namespace productivity_hub_api.Automappers
             CreateMap<CreateSubtareaDto, Subtarea>();
             CreateMap<UpdateSubtareaDto, Subtarea>();
             CreateMap<Subtarea, SubtareaDto>().ReverseMap();
+
+            //Notificaciones
+            CreateMap<Notificacion, NotificacionDto>().ReverseMap();
         }
     }
 }
