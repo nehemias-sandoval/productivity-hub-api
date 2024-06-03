@@ -9,9 +9,7 @@ using productivity_hub_api.Repository.EventoRepository;
 using productivity_hub_api.Repository.ProyectoRepository;
 using productivity_hub_api.Repository.TareaRepository;
 using productivity_hub_api.Service.ProyectoService;
-using System.Threading;
 using System.Transactions;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace productivity_hub_api.Service.TareaService
 {
@@ -52,7 +50,7 @@ namespace productivity_hub_api.Service.TareaService
             _proyectoService = proyectoService;
         }
 
-        public async Task<IEnumerable<TareaDto>> GetAllAsync(int? idEtiqueta, int? idProyectoOrEvento, bool? isProyecto, DateTime? fecha)
+        public async Task<IEnumerable<TareaDto>> GetAllAsync(int? idEtiqueta, int? idPrioridad, int? idProyectoOrEvento, bool? isProyecto, DateTime? fecha)
         {
             var usuarioDto = _httpContextAccessor.HttpContext?.Items["User"] as UsuarioDto;
             if (usuarioDto == null) return Enumerable.Empty<TareaDto>();
@@ -62,6 +60,9 @@ namespace productivity_hub_api.Service.TareaService
 
             if (idEtiqueta.HasValue)
                 tareasQuery = tareasQuery.ContinueWith(task => task.Result.Where(t => t.IdEtiqueta == idEtiqueta.Value));
+
+            if (idPrioridad.HasValue)
+                tareasQuery = tareasQuery.ContinueWith(task => task.Result.Where(t => t.IdPrioridad == idPrioridad.Value));
 
             if (idProyectoOrEvento.HasValue)
             {
@@ -77,7 +78,7 @@ namespace productivity_hub_api.Service.TareaService
 
             if (fecha.HasValue)
             {
-                tareasQuery = tareasQuery.ContinueWith(task => task.Result.Where(t => t.FechaLimite == fecha.Value));
+                tareasQuery = tareasQuery.ContinueWith(task => task.Result.Where(t => t.FechaLimite.Date == fecha.Value.Date));
             }
 
             var tareas = await tareasQuery;

@@ -18,6 +18,9 @@ namespace productivity_hub_api.Controllers
             _catalogoService = catalogoService;
         }
 
+        [HttpGet("etiqueta")]
+        public async Task<IEnumerable<EtiquetaDto>> GetEtiquetas() => await _catalogoService.GetAllEtiquetasAsync();
+
         [HttpGet("prioridad")]
         public async Task<IEnumerable<PrioridadDto>> GetPrioridades() => await _catalogoService.GetAllPrioridadesAsync();
 

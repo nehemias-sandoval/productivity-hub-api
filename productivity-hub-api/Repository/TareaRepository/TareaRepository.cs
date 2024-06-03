@@ -16,7 +16,7 @@ namespace productivity_hub_api.Repository.TareaRepository
         public async Task<IEnumerable<Tarea>> GetAllAsync() => await _context.Tareas
             .Include(t => t.ProyectoTareas)
             .Include(t => t.EventoTareas)
-            .Include(t => t.Persona)
+            .Include(t => t.Persona).ThenInclude(p => p.Usuario)
             .Include(t => t.Etiqueta)
             .Include(t => t.Prioridad)
             .Include(t => t.Subtareas)

@@ -5,6 +5,7 @@ using productivity_hub_api.DTOs.Auth;
 using productivity_hub_api.Models;
 using productivity_hub_api.Repository.AuthRepository;
 using productivity_hub_api.Repository.ConfiguracionRepository;
+using productivity_hub_api.Settings;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using productivity_hub_api.DTOs.Auth;
-using productivity_hub_api.Models;
 using productivity_hub_api.Service.AuthService;
+using productivity_hub_api.Settings;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 

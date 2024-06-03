@@ -31,6 +31,8 @@ using productivity_hub_api.Repository.ConfiguracionRepository;
 using Microsoft.Extensions.Options;
 using productivity_hub_api.Settings;
 using productivity_hub_api.Service.GoogleService.Calendar;
+using productivity_hub_api.Service.MailService;
+using productivity_hub_api.Service.ReminderService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -111,9 +113,14 @@ builder.Services.AddScoped<ConfiguracionRepository>();
 
 // Configuration
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+builder.Services.AddSingleton<IMailSettings>(s => s.GetRequiredService<IOptions<MailSettings>>().Value);
 builder.Services.Configure<GoogleCalendarSettings>(builder.Configuration.GetSection(nameof(GoogleCalendarSettings)));
 builder.Services.AddSingleton<IGoogleCalendarSettings>(s => s.GetRequiredService<IOptions<GoogleCalendarSettings>>().Value);
 
+// Task
+builder.Services.AddScoped<IMailReminderService, MailReminderService>();
+builder.Services.AddHostedService<ReminderService>();
 
 // Service
 builder.Services.AddScoped<IUsuarioService<

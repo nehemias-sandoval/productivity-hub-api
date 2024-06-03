@@ -1,4 +1,4 @@
-﻿namespace productivity_hub_api.Models
+﻿namespace productivity_hub_api.Settings
 {
     public class AppSettings
     {

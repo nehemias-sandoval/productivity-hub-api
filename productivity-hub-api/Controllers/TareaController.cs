@@ -45,6 +45,7 @@ namespace productivity_hub_api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TareaDto>>> Get(
             [FromQuery] int? idEtiqueta, 
+            int? idPrioridad,
             int? idProyectoOrEvento, 
             bool? isProyecto, 
             DateTime? fecha)
@@ -52,7 +53,7 @@ namespace productivity_hub_api.Controllers
             if (idProyectoOrEvento.HasValue && !isProyecto.HasValue)
                 return BadRequest(new { message = "Al proporcionar idProyectoOrEvento debes proporcionar isProyecto" });
 
-            return Ok(await _tareaService.GetAllAsync(idEtiqueta, idProyectoOrEvento, isProyecto, fecha));
+            return Ok(await _tareaService.GetAllAsync(idEtiqueta, idPrioridad, idProyectoOrEvento, isProyecto, fecha));
         }
 
         [HttpGet("{id}")]
