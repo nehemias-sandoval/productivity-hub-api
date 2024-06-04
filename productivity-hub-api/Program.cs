@@ -40,6 +40,14 @@ using productivity_hub_api.DTOs.Notificacion;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+// Configurar CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        builder => builder.AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod());
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -167,6 +175,9 @@ app.UseMiddleware<JwtMiddleware>();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+// Usar la política de CORS
+app.UseCors("AllowSpecificOrigin");
 
 app.MapControllers();
 
