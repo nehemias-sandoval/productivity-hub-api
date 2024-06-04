@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using productivity_hub_api.DTOs.Auth;
+using productivity_hub_api.DTOs.Catalogo;
 using productivity_hub_api.Helpers;
 using productivity_hub_api.Service.AuthService;
 
@@ -17,19 +18,32 @@ namespace productivity_hub_api.Controllers
         private IValidator<CreateUsuarioDto> _createUsuarioValidator;
         private IValidator<UpdateUsuarioDto> _updateUsuarioValidator;
 
+        private IHttpContextAccessor _httpContextAccessor;
 
         public AuthController(
             IUsuarioService<
                 UsuarioDto, CreateUsuarioDto, UpdateUsuarioDto, AuthenticateReqDto, AuthenticateResDto> usuarioService,
             IValidator<AuthenticateReqDto> loginValidator,
             IValidator<CreateUsuarioDto> createUsuarioValidator,
-            IValidator<UpdateUsuarioDto> updateUsuarioValidator) 
+            IValidator<UpdateUsuarioDto> updateUsuarioValidator,
+            IHttpContextAccessor httpContextAccessor) 
         {
 
             _usuarioService = usuarioService;
             _loginValidator = loginValidator;
             _createUsuarioValidator = createUsuarioValidator;
             _updateUsuarioValidator = updateUsuarioValidator;
+            _httpContextAccessor = httpContextAccessor;
+        }
+
+        [HttpGet("usuario")]
+        [Authorize]
+        public ActionResult<UsuarioDto> GetEtiquetas()
+        {
+            var usuarioDto = _httpContextAccessor.HttpContext?.Items["User"] as UsuarioDto;
+            if (usuarioDto == null) return NotFound();
+
+            return Ok(usuarioDto);
         }
 
         [HttpPost("login")]
