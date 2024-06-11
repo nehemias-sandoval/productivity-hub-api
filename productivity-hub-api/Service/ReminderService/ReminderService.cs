@@ -25,7 +25,7 @@ namespace productivity_hub_api.Service.ReminderService
         private void ScheduleNextRun()
         {
             var now = DateTime.Now;
-            var nextExecutionTime = new DateTime(now.Year, now.Month, now.Day, 14, 50, 0);
+            var nextExecutionTime = new DateTime(now.Year, now.Month, now.Day, 6, 0, 0);
             if (now > nextExecutionTime)
             {
                 nextExecutionTime = nextExecutionTime.AddDays(1);
