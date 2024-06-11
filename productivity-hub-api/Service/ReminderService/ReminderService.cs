@@ -1,6 +1,7 @@
 ﻿using productivity_hub_api.DTOs.Mail;
 using productivity_hub_api.Models;
 using productivity_hub_api.Repository;
+using productivity_hub_api.Repository.NotificacionRepository;
 using productivity_hub_api.Service.MailService;
 
 namespace productivity_hub_api.Service.ReminderService
@@ -24,7 +25,7 @@ namespace productivity_hub_api.Service.ReminderService
         private void ScheduleNextRun()
         {
             var now = DateTime.Now;
-            var nextExecutionTime = new DateTime(now.Year, now.Month, now.Day, 6, 0, 0);
+            var nextExecutionTime = new DateTime(now.Year, now.Month, now.Day, 14, 50, 0);
             if (now > nextExecutionTime)
             {
                 nextExecutionTime = nextExecutionTime.AddDays(1);
@@ -38,11 +39,13 @@ namespace productivity_hub_api.Service.ReminderService
         {
             using (var scope = _scopeFactory.CreateScope())
             {
+                var notificacionRepository = scope.ServiceProvider.GetRequiredService<NotificacionRepository>();
                 var tareaRepository = scope.ServiceProvider.GetRequiredKeyedService<IRepository<Tarea>>("tareaRepository");
                 var mailService = scope.ServiceProvider.GetRequiredService<IMailReminderService>();
 
                 var tareas = await tareaRepository.GetAllAsync();
                 var personas = tareas.Select(t => t.Persona).Distinct();
+                var notificaciones = new List<Notificacion>();
 
                 if (personas.Any())
                 {
@@ -60,12 +63,34 @@ namespace productivity_hub_api.Service.ReminderService
                                 TareasPendientes = tareasPorVencer.Count()
                             };
 
+                            string strTareaPendiente = mailData.TareasPendientes > 1 ? "tareas pendientes" : "tarea pendiente";
+                            string notificacion = $"Tiene {mailData.TareasPendientes} {strTareaPendiente} para ahora";
+                            notificaciones.Add(new Notificacion
+                            {
+                                Mensaje = notificacion,
+                                Fecha = DateTime.Today,
+                                Leida = false,
+                                IdTipoNotificacion = 1, // Recordatorio
+                                IdPersona = persona.Id,
+                            });
+
                             mailService.SendHTMLMail(mailData);
                         }
                     });
                 }
 
-                // Reprogramar el temporizador para el próximo día a las 7 AM
+                if (notificaciones.Count() > 0)
+                {
+                    foreach (var notificacion in notificaciones)
+                    {
+                        await notificacionRepository.AddAsync(notificacion);
+                    }
+
+                    await notificacionRepository.SaveAsync();
+                }
+                
+
+                // Reprogramar el temporizador para el próximo día a las 6 AM
                 ScheduleNextRun();
             }
         }

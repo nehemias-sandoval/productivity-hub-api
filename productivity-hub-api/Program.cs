@@ -58,7 +58,7 @@ builder.Services.AddSwaggerGen(swagger =>
     swagger.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "v1",
-        Title = "Productiviry Hub API",
+        Title = "Productivity Hub API",
         Description = ".NET Core 8 Web API"
     });
 

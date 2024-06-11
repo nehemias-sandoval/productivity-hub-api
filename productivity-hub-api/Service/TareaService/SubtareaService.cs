@@ -94,12 +94,12 @@ namespace productivity_hub_api.Service.TareaService
             if (subtarea != null)
             {
                 var tarea = subtarea.Tarea;
-                var proyecto = tarea.ProyectoTareas.Select(pt => pt.Proyecto).First();
+                var proyecto = tarea.ProyectoTareas.Select(pt => pt.Proyecto).FirstOrDefault();
                 _repositorySubtarea.Delete([subtarea]);
                 await _repositorySubtarea.SaveAsync();
 
                 await _tareaService.CompletarWhenSubtareasAreCompletadasAsync(subtarea.IdTarea);
-                await _proyectoService.ChangeEstadoAsync(proyecto.Id);
+                if (proyecto != null) await _proyectoService.ChangeEstadoAsync(proyecto.Id);
 
                 return true;
             }

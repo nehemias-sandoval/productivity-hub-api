@@ -28,5 +28,7 @@ namespace productivity_hub_api.Repository.NotificacionRepository
         }
 
         public async Task AddAsync(Notificacion notificacion) => await _context.AddAsync(notificacion);
+
+        public async Task SaveAsync() => await _context.SaveChangesAsync();
     }
 }
