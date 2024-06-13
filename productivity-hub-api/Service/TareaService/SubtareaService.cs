@@ -62,7 +62,7 @@ namespace productivity_hub_api.Service.TareaService
             await _tareaService.CompletarWhenSubtareasAreCompletadasAsync(subtarea.IdTarea);
 
             var subtareaById = await _repositorySubtarea.GetByIdAsync(subtarea.Id);
-            if (subtareaById != null)
+            if (subtareaById != null && subtareaById.Tarea.ProyectoTareas.Count() > 0)
                 await _proyectoService.ChangeEstadoAsync(subtareaById.Tarea.ProyectoTareas.Select(pt => pt.Proyecto).First().Id);
 
             return subtareaDto;
