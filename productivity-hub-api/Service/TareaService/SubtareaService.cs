@@ -122,7 +122,9 @@ namespace productivity_hub_api.Service.TareaService
                 var subtareaDto = _mapper.Map<SubtareaDto>(subtarea);
 
                 await _tareaService.CompletarWhenSubtareasAreCompletadasAsync(subtarea.IdTarea);
-                await _proyectoService.ChangeEstadoAsync(subtarea.Tarea.ProyectoTareas.Select(pt => pt.Proyecto).First().Id);
+
+                if (subtarea.Tarea.ProyectoTareas.Count() > 0)
+                    await _proyectoService.ChangeEstadoAsync(subtarea.Tarea.ProyectoTareas.Select(pt => pt.Proyecto).First().Id);
 
                 return subtareaDto;
             }
