@@ -14,8 +14,8 @@ namespace productivity_hub_api.Repository.TareaRepository
         }
 
         public async Task<IEnumerable<Tarea>> GetAllAsync() => await _context.Tareas
-            .Include(t => t.ProyectoTareas)
-            .Include(t => t.EventoTareas)
+            .Include(t => t.ProyectoTareas).ThenInclude(pt => pt.Proyecto)
+            .Include(t => t.EventoTareas).ThenInclude(et => et.Evento).ThenInclude(e => e.TipoEvento)
             .Include(t => t.Persona).ThenInclude(p => p.Usuario)
             .Include(t => t.Etiqueta)
             .Include(t => t.Prioridad)
@@ -23,8 +23,8 @@ namespace productivity_hub_api.Repository.TareaRepository
             .ToListAsync();
 
         public async Task<Tarea?> GetByIdAsync(int id) => await _context.Tareas
-            .Include(t => t.ProyectoTareas)
-            .Include(t => t.EventoTareas)
+            .Include(t => t.ProyectoTareas).ThenInclude(pt => pt.Proyecto)
+            .Include(t => t.EventoTareas).ThenInclude(et => et.Evento).ThenInclude(e => e.TipoEvento)
             .Include(t => t.Persona)
             .Include(t => t.Etiqueta)
             .Include(t => t.Prioridad)

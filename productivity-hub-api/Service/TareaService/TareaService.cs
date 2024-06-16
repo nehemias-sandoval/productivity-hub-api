@@ -182,9 +182,7 @@ namespace productivity_hub_api.Service.TareaService
                 _tareaRepository.Update(tarea);
                 await _tareaRepository.SaveAsync();
 
-                var tareaDto = _mapper.Map<TareaDto>(tarea);
-
-                return tareaDto;
+                return await GetByIdAsync(tarea.Id);
             }
 
             return null;

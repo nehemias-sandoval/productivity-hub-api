@@ -1,4 +1,6 @@
 ﻿using productivity_hub_api.DTOs.Catalogo;
+using productivity_hub_api.DTOs.Evento;
+using productivity_hub_api.DTOs.Proyecto;
 using productivity_hub_api.DTOs.Subtarea;
 
 namespace productivity_hub_api.DTOs.Tarea
@@ -18,5 +20,9 @@ namespace productivity_hub_api.DTOs.Tarea
         public PrioridadDto Prioridad { get; set; }
 
         public List<SubtareaDto> Subtareas { get; set; }
+
+        public ProyectoDto proyecto { get; set; }
+
+        public EventoDto Evento { get; set; }
     }
 }

@@ -46,9 +46,12 @@ namespace productivity_hub_api.Automappers
 
             //Tarea
             CreateMap<CreateTareaDto, Tarea>();
-            CreateMap<Tarea, TareaDto>().ReverseMap();
+            CreateMap<Tarea, TareaDto>()
+                .ForMember(dest => dest.proyecto, opt => opt.MapFrom(src => src.ProyectoTareas.FirstOrDefault().Proyecto))
+                .ForMember(dest => dest.Evento, opt => opt.MapFrom(src => src.EventoTareas.FirstOrDefault().Evento));
+            CreateMap<TareaDto, Tarea>();
             CreateMap<CreateSubtareaInTareaDto, Subtarea>();
-            CreateMap<UpdateTareaDto, Tarea>();
+            CreateMap<UpdateTareaDto, Tarea>().ReverseMap();
 
             //Subtarea
             CreateMap<CreateSubtareaDto, Subtarea>();
